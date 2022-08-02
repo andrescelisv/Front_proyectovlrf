@@ -1,0 +1,284 @@
+
+<div *ngIf="this.tareas.body.length > 0">
+<mat-toolbar>
+   
+    <span class="example-spacer"></span>
+<button (click)="openDialog()" mat-raised-button color="primary">Añadir {{componente}}
+   <!-- <div *ngIf="this.varcomprobacion">
+        <app-usuario-dialog (addUser)="addUser($event)"></app-usuario-dialog>
+    </div>
+-->
+</button>
+
+</mat-toolbar>
+<mat-form-field appearance="standard">
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar" #input autocomplete="off">
+  </mat-form-field>
+  <div class="mat-elevation-z8">
+
+   
+    
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z15" matSort>
+  
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+  <div *ngFor="let item of tipos; let i = index">
+   
+
+    
+   <div *ngIf="i < tipos.length-1" >
+    <!-- Name Column -->
+  
+    <ng-container matColumnDef="{{item}}">
+      
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{item}} </th>
+      
+      <td mat-cell *matCellDef="let element">
+
+       
+            
+       
+            <div *ngFor="let val of element | keyvalue">
+
+              
+            <div *ngIf="item === 'docente'">
+               
+               <div *ngIf="val.key == 'dba'">
+                      
+                <div *ngIf="$any(val).value.length> 0">
+                   
+                  <div *ngFor="let valor of $any(val).value; let i = index">
+                      
+                    <div *ngIf="valor.docente.length > 0 ">
+                      
+                        <div *ngFor="let valordocente of $any(valor.docente); let i = index">
+                          
+                                {{valordocente.nombre}}
+                        </div>
+
+
+                    </div>
+                  
+                  
+                 
+                  
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="val.key == 'nd'">
+                      
+                <div *ngIf="$any(val).value.length> 0">
+                   
+                  <div *ngFor="let valor of $any(val).value; let i = index">
+                      
+                    <div *ngIf="valor.docente.length > 0 ">
+                      
+                        <div *ngFor="let valordocente of $any(valor.docente); let i = index">
+                          
+                                {{valordocente.nombre}}
+                        </div>
+
+
+                    </div>
+                  
+                  
+                 
+                  
+                  </div>
+                </div>
+              </div>
+     
+               
+             </div>
+
+             <div *ngIf="item === 'dba'">
+               
+              <div *ngIf="val.key == 'nd'">
+                     
+                <div *ngIf="$any(val).value.length> 0">
+                  
+                  <div *ngFor="let valor of $any(val).value; let i = index">
+                               {{valor.dba}}
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div *ngIf="item === 'nd'">
+               
+              <div *ngIf="val.key == 'nd'">
+                     
+                <div *ngIf="$any(val).value.length> 0">
+                  
+                  <div *ngFor="let valor of $any(val).value; let i = index">
+                               {{valor.nd}}
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+             
+
+             <div *ngIf="item === 'videovisto'">
+               
+              <div *ngIf="val.key == 'dba'">
+                     
+               <div *ngIf="$any(val).value.length> 0">
+                  
+                 <div *ngFor="let valor of $any(val).value; let i = index">
+                     
+                   <div *ngIf="valor.videovisto.length > 0 ">
+                     
+                       <div *ngFor="let valorvideovisto of $any(valor.videovisto); let i = index">
+                         
+                               {{valorvideovisto.videovisto}}
+                       </div>
+
+
+                   </div>
+                 
+                 
+                
+                 
+                 </div>
+               </div>
+             </div>
+    
+              
+            </div>
+
+             
+                  
+
+                <div *ngIf="val.key == item">
+
+                  <div *ngIf="val.key != 'institucion' && val.key !='grado' && val.key != 'materia' && val.key != 'dba' && val.key!='videovisto' && val.key!='estudiante' && val.key!='docente' && val.key!='nd'">
+                    {{val.value}}
+               
+                  </div>
+
+                  
+
+                  <div *ngIf="val.key == 'institucion'">
+                    <div *ngFor="let valor of $any(val).value">
+                      {{valor.nombre}}
+                    </div>
+                  
+                  </div>
+
+                  <div *ngIf="val.key == 'dba'">
+                    <div *ngFor="let valor of $any(val).value">
+                      {{valor.dba}} | {{valor.fecha}}  
+                    </div>
+                  
+                  </div>
+
+                  <div *ngIf="val.key == 'videovisto'">
+                    <div *ngFor="let valor of $any(val).value">
+                      {{valor.videovisto}}
+                    </div>
+                  
+                  </div>
+
+                  <div *ngIf="val.key == 'estudiante'">
+                    <div *ngFor="let valor of $any(val).value">
+                      {{valor.nombre}} 
+                      
+                    </div>
+                  
+                  </div>
+                  
+                 
+                  
+                  
+
+                
+
+                  <div *ngIf="val.key == 'grado'">
+                   
+                   <!-- {{$any(val).value}}-->
+                   
+                  
+                    <div [ngSwitch]="isString([$any(val).value])"> 
+                      
+                      <div *ngSwitchCase="'true'">
+                       
+                        <div *ngFor="let valor of $any(val).value; let i = index">
+                          
+                      
+                      {{valor.grado}}
+                      
+                      </div>
+                  </div> 
+
+                  
+                  
+                 
+                  <div *ngSwitchCase="'false'">
+                    
+                    {{$any(val).value}}
+                      
+                  </div>
+                  
+                
+                    </div>
+                  
+                  </div>
+
+                  <div *ngIf="val.key == 'materia'">
+                    <div *ngFor="let valor of $any(val).value">
+                      {{valor.nombre}}
+                      
+                    </div>
+                  </div>
+
+                  
+                  
+              
+            </div>
+            </div>
+        
+        
+        </td>
+    </ng-container>
+  
+    </div>
+     
+    <div *ngIf="i == tipos.length-1">
+      <ng-container matColumnDef="{{item}}">
+        <th mat-header-cell *matHeaderCellDef> {{item}} </th>
+        <td mat-cell *matCellDef="let element">
+         
+         
+         <a (click)="openDialogEdit(element)" ><mat-icon matTooltip="Editar" class="cursorpointer" style="color: blue">edit</mat-icon>
+            </a>
+
+        <a (click)="delete(element)"><mat-icon matTooltip="Eliminar" class="cursorpointer" style="color:red">delete</mat-icon></a>
+        
+        </td>
+      </ng-container>
+    </div>
+</div> 
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator
+              [pageSizeOptions]="[5, 10, 25, 100]"
+              showFirstLastButtons >
+</mat-paginator>
+
+</div>
+
+</div>
+
+
+<h2 *ngIf="this.tareas.body.length == 0">No hay nada para mostrar</h2>

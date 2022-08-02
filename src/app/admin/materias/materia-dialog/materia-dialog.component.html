@@ -1,0 +1,80 @@
+<h1 mat-dialog-title>Añadir Materia formulario</h1>
+
+<div mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="Ingresar()">
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir Materia</h1>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Area</mat-label>
+            <mat-select [(ngModel)]="selectArea" formControlName="area">
+              <mat-option value="Lenguaje">Lenguaje</mat-option>
+              <mat-option value="Matematicás,geometría y estadistica">Matematicás,geometría y estadistica</mat-option>
+              <mat-option value="Ciencias sociales">Ciencias sociales</mat-option>
+              <mat-option value="Educación ambiental">Educación ambiental</mat-option>
+              <mat-option value="Artistica">Artistica</mat-option>
+              <mat-option value="Tecnología">Tecnología</mat-option>
+              <mat-option value="Educación fisica">Educación fisica</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <app-control-messages [control]="form.get('area')"></app-control-messages>
+
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput autocomplete="off" formControlName="nombre">
+          </mat-form-field>
+          <app-control-messages [control]="form.get('nombre')"></app-control-messages>
+
+          <mat-form-field  appearance="fill">
+
+            <mat-label>Institucion</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="auto"
+                   [formControl]="stateCtrl"
+                   
+                   >
+                
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
+                
+        <span>{{state.nombre}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        
+          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+
+          <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinner">
+
+          <mat-form-field  appearance="fill">
+
+            <mat-label>grado</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autogrado"
+                   [formControl]="stateCtrlgrado"
+                   
+                   >
+                
+            <mat-autocomplete #autogrado="matAutocomplete" (optionSelected)="selectedgrado($event)">
+              <mat-option *ngFor="let state of filtrargrado | async" [value]="state.grado">
+                
+        <span>{{state.grado}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+     
+          <app-control-messages  [control]="stateCtrlgrado"></app-control-messages>
+          
+         </div>
+
+          <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+          <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>
+        
+      </form>
+</div>

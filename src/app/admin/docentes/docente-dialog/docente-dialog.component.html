@@ -1,0 +1,153 @@
+<h1 mat-dialog-title>Añadir Docente formulario</h1>
+
+<div mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="Ingresar()">
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir Docente</h1>
+
+        <mat-form-field class="ancho" appearance="fill">
+            <mat-label>nombre</mat-label>
+            <input  matInput autocomplete="off" formControlName="nombre">
+          </mat-form-field>
+          <app-control-messages [control]="form.get('nombre')"></app-control-messages>
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>cedula</mat-label>
+            <input type="number"  matInput autocomplete="off" formControlName="cedula">
+          </mat-form-field>
+          <app-control-messages [control]="form.get('cedula')"></app-control-messages>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Ingrese la fecha de nacimiento</mat-label>
+            <input matInput [matDatepicker]="picker"  [(ngModel)]="select" formControlName="fechaNacimiento" autocomplete="off">
+            <mat-hint>DD/MM/YYYY</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <app-control-messages [control]="form.get('fechaNacimiento')"></app-control-messages>
+          <!--
+          <mat-form-field appearance="fill">
+            <mat-label>Rol</mat-label>
+            <mat-select [(ngModel)]="select" formControlName="rol">
+              <mat-option value="Admin">Admin</mat-option>
+              <mat-option value="Docente">Docente</mat-option>
+              <mat-option value="Estudiante">Estudiante</mat-option>
+              <mat-option value="Institucion">Institucion</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+        -->
+          
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput  autocomplete="off" formControlName="correoElectronico">
+          </mat-form-field>
+          <app-control-messages [control]="form.get('correoElectronico')"></app-control-messages>
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Institucion</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="auto"
+                   [formControl]="stateCtrl"
+                  
+                   >
+                
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
+                
+        <span>{{state.nombre}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+
+          <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinner">
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Grado</mat-label>
+                   <div *ngIf="showAlertMat" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay grados disponibles para esta institución</strong>
+                    </div>
+                    </div>
+                    
+                      <mat-select [formControl]="stateCtrlgrado" [(ngModel)]="selection" name="values" multiple>
+                
+                          <mat-select-trigger>
+                             {{stateCtrlgrado.value?.[0] || ''}}
+                            <span *ngIf="(stateCtrlgrado.value?.length || 0)>1">
+                             (+{{(stateCtrlgrado.value?.length || 0)-1}} {{stateCtrlgrado.value?.length===2 ? 'other' : 'others'}})
+                            </span>
+                          </mat-select-trigger>
+                          <mat-option *ngFor="let state of datosgrado" (click)="clickedOption()" [value]="state.grado">
+                            
+                            
+                            {{state.grado}}</mat-option>
+                      </mat-select>
+                  
+                
+              </mat-form-field>
+              <app-control-messages  [control]="stateCtrlgrado"></app-control-messages>
+              
+          <mat-form-field  appearance="fill">
+            <mat-label>Materia</mat-label>
+                   <div *ngIf="showAlertMat" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay materias disponibles para esta institución</strong>
+                    </div>
+                    </div>
+                    
+                      <mat-select [formControl]="stateCtrlmateria" [(ngModel)]="selectionmateria" name="values" multiple>
+                
+                          <mat-select-trigger>
+                             {{stateCtrlmateria.value?.[0] || ''}}
+                            <span *ngIf="(stateCtrlgrado.value?.length || 0)>1">
+                             (+{{(stateCtrlmateria.value?.length || 0)-1}} {{stateCtrlmateria.value?.length===2 ? 'other' : 'others'}})
+                            </span>
+                          </mat-select-trigger>
+                          <mat-option *ngFor="let state of datosmateria" (click)="clickedOptionMateria()" [value]="state.nombre">
+                            
+                            
+                            {{state.nombre}}</mat-option>
+                      </mat-select>
+                  
+                
+              </mat-form-field>
+
+              <app-control-messages  [control]="stateCtrlmateria"></app-control-messages>
+          
+         <!-- <mat-form-field  appearance="fill">
+            <mat-label>Materia</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="automateria"
+                   [formControl]="stateCtrlmateria"
+                   (change)="stateCtrlmateria"
+                   >
+                   <div *ngIf="showAlertMat" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay materias disponibles para esta institución</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #automateria="matAutocomplete" (optionSelected)="selectedMateria($event)">
+              <mat-option *ngFor="let state of filtrarmateria | async" [value]="state.nombre">
+                <span>{{state.nombre}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <app-control-messages  [control]="stateCtrlmateria"></app-control-messages>
+        -->
+        </div>
+
+          <div>
+            <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+            <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </form>
+</div>

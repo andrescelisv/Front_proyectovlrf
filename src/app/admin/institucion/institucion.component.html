@@ -1,0 +1,20 @@
+<app-mat-toolbar-home></app-mat-toolbar-home>
+
+<div class="container py-5">
+
+    <div class="rounded shadow p-5 d-flex">
+    
+      <img src="/assets/tarea.svg" alt="" width="250">
+      <div>
+      <h3 class="text-primary"> Bienvenido a Institucion</h3>
+      <h5 class="text-secondary">Con esta aplicación podras consultar,crear y actualizar las instituciones</h5>
+    
+      <p class="text-muted">
+        Esta aplicación fue desarrollada para el proyecto vLRF.
+      </p>
+    </div>
+    </div>
+
+
+    <app-table-consumer-add [url]="url" [tipos]="tipos" [componente]="estudiante" [componenteDialog]="componentDialog" ></app-table-consumer-add>
+    

@@ -1,0 +1,140 @@
+<h1 mat-dialog-title>Añadir Nivel de desempeño</h1>
+
+<div mat-dialog-content>
+    
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir Nivel de desempeño de un estudiante</h1>
+
+           
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Institucion</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="auto"
+                   [formControl]="stateCtrl"
+                   
+                   >
+                
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
+                
+        <span>{{state.nombre}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+          <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinner">
+
+            <mat-label>Ingrese el nivel de desempeño</mat-label>
+
+                <div (mouseover)="changeText=true" (mouseout)="changeText=false">
+                    <span *ngIf="!changeText"></span>
+                    <span *ngIf="changeText">Seleccione con la barra el nivel de desempéño del estudiante en una escala de 0 a 5</span>
+              
+                    <br>
+                    <br>
+            
+                </div>
+
+            <mat-slider
+                [(ngModel)]="slider"
+                thumbLabel
+                (change)="cambiar()"
+                [displayWith]="formatLabel"
+                tickInterval="5"
+                step="0.1"
+                min="0"
+                max="5"
+                aria-label="units">
+
+                <input required type="hidden">
+            </mat-slider>
+            
+
+          <mat-form-field  appearance="fill">
+            <mat-label>DBA</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autodba"
+                   [formControl]="stateCtrldba"
+                   (change)="stateCtrldba"
+                   >
+                   <div *ngIf="showAlert" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay dba disponibles</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #autodba="matAutocomplete" (optionSelected)="selecteddba($event)">
+              <mat-option *ngFor="let state of filtrardba | async" [value]="state.identificador">
+                <span>{{state.identificador}}</span>
+            
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <app-control-messages  [control]="stateCtrldba"></app-control-messages>
+
+         
+          <mat-form-field  appearance="fill">
+            <mat-label>Docente</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autodocente"
+                   [formControl]="stateCtrldocentes"
+                   (change)="stateCtrldocentes"
+                   >
+                   <div *ngIf="showAlert" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay docentes disponibles</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #autodocente="matAutocomplete" (optionSelected)="selectedDocentes($event)">
+              <mat-option *ngFor="let state of filtrardocentes| async" [value]="state.nombre">
+                <span>{{state.nombre}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+              <app-control-messages  [control]="stateCtrldocentes"></app-control-messages>
+
+
+              <mat-form-field  appearance="fill">
+                <mat-label>Estudiante</mat-label>
+                <input matInput
+                       aria-label="State"
+                       [matAutocomplete]="autoestudiante"
+                       [formControl]="stateCtrlestudiantes"
+                       (change)="stateCtrlestudiantes"
+                       >
+                       <div *ngIf="showAlert" class="col-md-7 mb-2">
+                        <div class="alert alert-danger">
+                             <strong>No hay estudiantes disponibles</strong>
+                        </div>
+                    </div>
+                <mat-autocomplete #autoestudiante="matAutocomplete" (optionSelected)="selectedEstudiantes($event)">
+                  <mat-option *ngFor="let state of filtrarestudiantes| async" [value]="state.nombre">
+                    <span>{{state.nombre}}</span>
+         
+                    
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+    
+                  <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
+
+        </div>
+
+          <div>
+            <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+            <input *ngIf="btnact" (click)="Ingresar()" type="button" class="btn btn-primary"  aria-label="" aria-describedby="basic-addon1" value="guardar">
+          </div>
+        
+
+        

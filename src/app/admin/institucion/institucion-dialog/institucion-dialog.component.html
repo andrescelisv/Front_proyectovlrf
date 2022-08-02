@@ -1,0 +1,95 @@
+<h1 mat-dialog-title>Añadir Institución formulario</h1>
+
+<div mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="Ingresar()">
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir Institucion</h1>
+
+        <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input  matInput autocomplete="off" id="nombre" formControlName="nombre">
+          </mat-form-field>
+          <app-control-messages [control]="form.get('nombre')"></app-control-messages>
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Correo Electrónico</mat-label>
+            <input  matInput autocomplete="off" formControlName="correoElectronico">
+          </mat-form-field>
+          <app-control-messages [control]="form.get('correoElectronico')"></app-control-messages>
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Ubicación</mat-label>
+            <input matInput autocomplete="off" formControlName="ubicacion">
+          </mat-form-field>
+          <app-control-messages [control]="form.get('ubicacion')"></app-control-messages>
+          <mat-form-field  appearance="fill">
+            <mat-label>Departamento</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="auto"
+                   [formControl]="stateCtrl"
+                   
+                   >
+                
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let state of filtrarDepartamento | async" [value]="state.nombre">
+                
+        <span>{{state.nombre}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+
+          <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+          <div *ngIf="spinner">
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Municipio</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="automunicipio"
+                   [formControl]="stateCtrlmunicipio"
+                   (change)="stateCtrlmunicipio"
+                   >
+                
+            <mat-autocomplete #automunicipio="matAutocomplete" (optionSelected)="selectedMunicipio($event)">
+              <mat-option *ngFor="let state of filtrarmunicipio | async" [value]="state.municipio">
+                
+        <span>{{state.municipio}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+         
+        </div>
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Telefono</mat-label>
+            <input  matInput autocomplete="off" formControlName="telefono">
+          </mat-form-field>
+          <app-control-messages [control]="form.get('telefono')"></app-control-messages>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Zona</mat-label>
+            <mat-select [(ngModel)]="selectZona" formControlName="zona">
+              <mat-option value="Urbana">Urbana</mat-option>
+              <mat-option value="Rural">Rural</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+
+          <mat-form-field appearance="fill">
+            <mat-label>Jornada</mat-label>
+            <mat-select [(ngModel)]="selectJornada" formControlName="jornada">
+              <mat-option value="Diurna">Diurna</mat-option>
+              <mat-option value="Nocturna">Nocturna</mat-option>
+            </mat-select>
+          </mat-form-field>
+         
+          
+    
+          <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+          <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>
+        
+      </form>
+</div>

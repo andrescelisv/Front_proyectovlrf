@@ -1,0 +1,63 @@
+<app-mat-toolbar-home></app-mat-toolbar-home>
+
+
+
+<!--
+<div class="col-md-6">
+    <h3>Usuarios</h3>
+    
+    <div  class="my-5"></div>
+
+    <div *ngFor="let tarea of tareas.body;let i=index" class="card mb-3">
+      <div  class="card-body">
+        <div class="d-flex justify-content-between">
+         
+         {{i+1}}
+        
+
+        {{ tarea.username}}
+       
+        
+       
+      </div>
+      <div class="d-flex justify-content-between">
+        {{ tarea.rol}}
+
+
+       
+      </div>
+      <div class="d-flex justify-content-between">
+        {{ tarea.email}}
+
+
+       
+      </div>
+        <div>
+         
+        </div>
+      </div>
+     
+      
+      
+    </div>
+    
+</div>
+
+
+
+<div class="row">
+    <div class="col">
+        <form (ngSubmit)="buscar($event)" autocomplete="off">
+            <input type="text" 
+            [(ngModel)]="termino"
+            name="termino"
+            placeholder="Buscar usuario ..."
+            class="form-control"
+            />
+        </form>
+    </div>
+</div>
+
+-->
+
+<app-table-consumer-add [url]="url" [tipos]="tipos" [componente]="usuario"  [componenteDialog]="componentDialog"></app-table-consumer-add>

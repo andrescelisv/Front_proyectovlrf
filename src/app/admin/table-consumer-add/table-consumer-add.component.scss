@@ -1,0 +1,163 @@
+
+.carta{
+    visibility: hidden;
+
+    mat-card-content{
+        visibility: hidden;
+    }
+}
+
+.example-menu-row {
+    margin-bottom: 0px;
+  }
+
+  .sidenav-link-icon{
+    width: 3rem;
+    min-width: none;
+    text-align: center;
+}
+
+.example-spacer {
+    flex: 1 1 auto;
+  }
+
+
+.campana:hover{
+    .icono{
+        color: rgb(16, 15, 15);
+        left: 1200px;
+        right: 0px;
+        bottom: 350px;
+        height: 300px;
+        width: 100px;
+        box-shadow: 2px 1px 5px 0px rgba(235, 8, 8, 0.75);
+        -webkit-box-shadow: 2px 1px 5px 0px rgba(42, 23, 214, 0.75);
+        -moz-box-shadow: 2px 1px 5px 0px rgba(181, 14, 159, 0.75);
+        content: attr(button);
+        position: absolute;
+
+        .carta{
+            visibility: visible;
+        }
+    }
+    
+}
+
+
+.material-symbols-outlined {
+  
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 700,
+  'GRAD' 0,
+  'opsz' 48
+}
+
+.tamanocampana{
+    height: 45px;
+    width: 100px;
+}
+
+
+
+
+.noti-number{ 
+color: #fff;
+position: relative;
+top: -28px;
+left: 17px;
+font-size: 10px;
+background: #f00;
+padding: 1px;
+border-radius: 50px;
+width: 30px;
+text-align: center;
+}
+
+.noti-Btn{
+transition: 0.9s;
+cursor: pointer;
+font-size: 28px;
+position: absolute;
+z-index: 99999999;
+top: 80px;
+left: 1200px ;
+width: 20%;
+}
+
+.noti-Btn:hover > .lv-noti-box{
+height: 60vh;
+}
+
+.lv-noti-box{
+width: 400px;
+height: 0px;
+transition: 0.9s;
+overflow-y: scroll;
+scrollbar-width: thin;
+background-color: #787979;
+}
+@media (max-width: 700px) {
+.lv-noti-box {
+    width: 300px;
+};
+.noti-Btn{
+    position: absolute;
+    z-index: 99999999;
+    top: 80px;
+    left: calc(100% - 12rem);
+    width: 20%;
+}
+.noti-number{ 
+    position: absolute;
+    left: calc(100% - 10rem);
+    color: #fff;
+    display: block;
+    margin: 10px;
+    font-size: 22px;
+    cursor: pointer;
+
+}
+}
+
+.noti-sec{
+    padding: 10px;
+border-bottom: 1px dotted #fff;
+transition: 0.2s;
+}
+.noti-sec:hover{
+
+background-color:#f97500ed;
+}
+.noti-txt{
+vertical-align: top;
+font-size: 14px;
+color: #fff;
+}
+
+.noti-sub-txt{
+font-size: 10px;
+color: white;
+}
+
+
+
+
+table {
+    width: 100%;
+    margin: 10px;
+  }
+
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+
+.cursorpointer{
+    cursor: pointer;
+}
+
+
+.addbutt{
+    flex: 1 1 auto;
+}

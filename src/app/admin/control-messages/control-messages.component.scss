@@ -1,0 +1,12 @@
+//Muestra el mensaje debajo del input, alineado al centro, con fuente de texto peque{a y mostrando el bloque expandido, ya que no
+//tiene wrap sino flex.
+.textoerrorinput{
+    color:red;
+    display: flex;
+    align-items: center;
+    font-size: small;
+    width: 140%;
+    height: 3px;
+    
+}
+

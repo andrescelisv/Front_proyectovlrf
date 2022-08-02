@@ -1,0 +1,37 @@
+<h1 mat-dialog-title>Añadir Usuario formulario</h1>
+<div mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="Ingresar()">
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir Usuario</h1>
+
+        <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Usuario</mat-label>
+            <input  matInput autocomplete="off" formControlName="usuario">
+          </mat-form-field>
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Contraseña</mat-label>
+            <input  matInput type="password" autocomplete="off" formControlName="contraseña">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Rol</mat-label>
+            <mat-select [(ngModel)]="select" formControlName="rol">
+              <mat-option value="Admin">Admin</mat-option>
+              <mat-option value="Docente">Docente</mat-option>
+              <mat-option value="Estudiante">Estudiante</mat-option>
+              <mat-option value="Institucion">Institucion</mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Email</mat-label>
+            <input placeholder="data.email" matInput  autocomplete="off" formControlName="email">
+          </mat-form-field>
+
+          <div>
+            <button  class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+            <button type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </form>
+</div>

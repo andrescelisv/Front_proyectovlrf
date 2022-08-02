@@ -1,0 +1,97 @@
+<mat-toolbar color="primary">
+    <span>Admin</span>
+    <span class="example-spacer"></span>
+
+    <div class = "noti-Btn">
+  
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+      <div class="tamanocampana">
+          <span class="material-symbols-outlined">
+              notifications
+              <div class = "noti-number">
+              10</div>
+          </span>
+      </div>
+  <div class ="lv-noti-box">
+  <!--notification container Start-->
+      <div class="noti-sec">
+  
+          <div class = "noti-txt">
+          Post_Title
+          </div>
+
+      </div>
+
+      <div class="noti-sec">
+  
+          <div class = "noti-txt">
+              Post Title
+           <div class ="noti-sub-txt">Sub_Title</div>
+          </div>
+      </div>
+
+      <div class="noti-sec">
+          <div class = "noti-txt">
+               Post_Title
+              <div class = "noti-sub-txt">Sub_Title</div>
+  
+          </div>
+      </div>
+      <div class="noti-sec">
+  
+          <div class = "noti-txt">
+              Post_Title
+              <div class = "noti-sub-txt">Sub_Title</div>
+          </div>
+      </div>
+  
+      <div class="noti-sec">
+  
+          <div class = "noti-txt">
+              Post_Title
+              <div class = "noti-sub-txt">Sub_Title</div>
+  
+
+          </div>
+      </div>
+        <!-- notification container End-->
+  </div>
+</div>
+  
+    <div class="example-menu-row">
+      
+      <button mat-stroked-button [matMenuTriggerFor]="menu" color="primary" ng-init>
+          <img src="./assets/profile.png" alt="" class="sidenav-link-icon">
+  
+      </button>
+      <mat-menu #menu="matMenu" class="uxg-user-profile">
+          <div class="uxg-menu-header">
+              <div class="uxg-avatar-title-block">
+                  <div class="uxg-avatar">A</div>
+                  <h6 class="uxg-h6">Andrés Celis</h6>
+                  <span class="uxg-caption">cvandres@unicauca.edu.co</span>
+              </div>
+          </div>
+          <mat-divider></mat-divider>
+          <button mat-menu-item>
+              <mat-icon>dashboard</mat-icon>
+              Item one
+          </button>
+          <button mat-menu-item>
+              <mat-icon>dashboard</mat-icon>
+              Item two
+          </button>
+          <mat-divider></mat-divider>
+          <div class="uxg-menu-footer">
+              <button mat-flat-button color="primary" dense>
+                  <mat-icon>exit_to_app</mat-icon>
+                  Logout
+              </button>
+          </div>
+      </mat-menu>
+    </div>
+    <button (click)="logout()" mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with menu icon">
+      <mat-icon>logout</mat-icon>
+    </button>
+    
+</mat-toolbar>

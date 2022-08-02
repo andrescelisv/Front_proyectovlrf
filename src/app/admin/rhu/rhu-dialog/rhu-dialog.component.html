@@ -1,0 +1,119 @@
+<h1 mat-dialog-title>Añadir RHU</h1>
+
+<div mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="Ingresar()">
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir RHU</h1>
+
+           
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Institucion</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="auto"
+                   [formControl]="stateCtrl"
+                   
+                   >
+                
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
+                
+        <span>{{state.nombre}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+          <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinner">
+
+            <mat-form-field class="ancho" appearance="fill">
+                <mat-label>Video visto</mat-label>
+                <input matInput  autocomplete="off" formControlName="videovisto">
+            </mat-form-field>
+            <app-control-messages [control]="form.get('videovisto')"></app-control-messages>
+
+          <mat-form-field  appearance="fill">
+            <mat-label>DBA</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autodba"
+                   [formControl]="stateCtrldba"
+                   (change)="stateCtrldba"
+                   >
+                   <div *ngIf="showAlert" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay dba disponibles</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #autodba="matAutocomplete" (optionSelected)="selecteddba($event)">
+              <mat-option *ngFor="let state of filtrardba | async" [value]="state.identificador">
+                <span>{{state.identificador}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <app-control-messages  [control]="stateCtrldba"></app-control-messages>
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Docente</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autodocente"
+                   [formControl]="stateCtrldocentes"
+                   (change)="stateCtrldocentes"
+                   >
+                   <div *ngIf="showAlert" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay dba disponibles</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #autodocente="matAutocomplete" (optionSelected)="selectedDocentes($event)">
+              <mat-option *ngFor="let state of filtrardocentes| async" [value]="state.nombre">
+                <span>{{state.nombre}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+              <app-control-messages  [control]="stateCtrldocentes"></app-control-messages>
+
+
+              <mat-form-field  appearance="fill">
+                <mat-label>Estudiante</mat-label>
+                <input matInput
+                       aria-label="State"
+                       [matAutocomplete]="autoestudiante"
+                       [formControl]="stateCtrlestudiantes"
+                       (change)="stateCtrlestudiantes"
+                       >
+                       <div *ngIf="showAlert" class="col-md-7 mb-2">
+                        <div class="alert alert-danger">
+                             <strong>No hay dba disponibles</strong>
+                        </div>
+                    </div>
+                <mat-autocomplete #autoestudiante="matAutocomplete" (optionSelected)="selectedEstudiantes($event)">
+                  <mat-option *ngFor="let state of filtrarestudiantes| async" [value]="state.nombre">
+                    <span>{{state.nombre}}</span>
+         
+                    
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+    
+                  <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
+
+        </div>
+
+          <div>
+            <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+            <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </form>
+</div>

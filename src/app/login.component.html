@@ -1,0 +1,28 @@
+<div class="body"  *ngIf="show">
+    <div class="login">
+        <mat-spinner *ngIf="loading" diameter="50" class="spinner"></mat-spinner>
+        <div *ngIf="spinner">
+        <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="Ingresar()">
+        <img src="./assets/profile.png" alt="" class="loginimg">
+        
+        <h1>Login</h1>
+
+        <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Usuario</mat-label>
+            <input matInput autocomplete="off" formControlName="usuario">
+          </mat-form-field>
+          <mat-form-field class="ancho" appearance="fill">
+            <mat-label>Contraseña</mat-label>
+            <input matInput type="password" autocomplete="off" formControlName="password">
+          </mat-form-field>
+
+          <div>
+            <button type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Ingresar</button>
+          </div>
+        </form>
+    </div>
+    <a  class="referencia" href="https://www.flaticon.es/iconos-gratis" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+    </div>
+   
+    
+</div>
