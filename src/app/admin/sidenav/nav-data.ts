@@ -43,8 +43,12 @@ export const navbarData = [
         routeLink: 'admin/nd',
         icon: "fa fa-level-down",
         label: 'Indicador de desempeño'
+    },
+    {
+    routeLink: 'admin/tc',
+    icon: "fa fa-level-down",
+    label: 'Indicador de desempeño'
     }
-   
 
 
 ];
