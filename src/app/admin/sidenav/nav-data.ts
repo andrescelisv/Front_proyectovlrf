@@ -45,10 +45,31 @@ export const navbarData = [
         label: 'Indicador de desempeño'
     },
     {
+        routeLink: 'admin/lv',
+        icon: "fa fa-play",
+        label: 'Lista de videos'
+    },
+    {
+        routeLink: 'admin/valvideos',
+        icon: "fa fa-star",
+        label: 'Valoración de videos'
+    },
+    {
+        routeLink: 'admin/ra',
+        icon: "fa fa-eye",
+        label: 'Ruta de aprendizaje'
+    },
+    {
+        routeLink: 'admin/comentario',
+        icon: "fa fa-comments",
+        label: 'Comentarios'
+    },
+    {
     routeLink: 'admin/tc',
     icon: "fa fa-level-down",
     label: 'Indicador de desempeño'
-    }
+    },
+
 
 
 ];

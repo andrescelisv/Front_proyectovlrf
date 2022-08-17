@@ -8,7 +8,7 @@
 
         <mat-form-field class="ancho" appearance="fill">
             <mat-label>Nombre</mat-label>
-            <input  matInput autocomplete="off" id="nombre" formControlName="nombre">
+            <input  matInput autocomplete="off" id="nombre" formControlName="nombre" [(ngModel)]="varnombre">
           </mat-form-field>
           <app-control-messages [control]="form.get('nombre')"></app-control-messages>
           <mat-form-field class="ancho" appearance="fill">
@@ -27,7 +27,10 @@
                    aria-label="State"
                    [matAutocomplete]="auto"
                    [formControl]="stateCtrl"
-                   
+                   [(ngModel)]="selectiondep"
+                 (focus)="verificacion()"
+                 (blur)="verificacion()"
+                 (mouseleave)="verificacion()"
                    >
                 
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
@@ -50,6 +53,10 @@
                    [matAutocomplete]="automunicipio"
                    [formControl]="stateCtrlmunicipio"
                    (change)="stateCtrlmunicipio"
+                   [(ngModel)]="selectionmun"
+                 (focus)="verificacion()"
+                 (blur)="verificacion()"
+                 (mouseleave)="verificacion()"
                    >
                 
             <mat-autocomplete #automunicipio="matAutocomplete" (optionSelected)="selectedMunicipio($event)">
@@ -86,7 +93,11 @@
             </mat-select>
           </mat-form-field>
          
-          
+          <div *ngIf="activate">
+
+            <span class="textoerrorinput">La institución ya se encuentra registrado</span>
+            <br>
+          </div> 
     
           <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
           <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>

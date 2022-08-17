@@ -23,7 +23,9 @@ export class ControlMessagesComponent{
   constructor() {}
 
   get errorMessage() {
-    //console.log(this.control);  
+    
+    
+
     for (let propertyName in this.control.errors) {  //Recibe el formControl de cada uno de los componentes de angular material, que se tienen en cada uno de los componentes en el html.
       //Realiza el for sobre el oneDataWay del input llamado control, de este objeto obtiene el atributo errors que contiene el validador empleado, cuando se creo el objeto formControl
       

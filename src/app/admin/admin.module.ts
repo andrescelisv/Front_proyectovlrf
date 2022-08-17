@@ -28,6 +28,17 @@ import { RhuDialogComponent } from './rhu/rhu-dialog/rhu-dialog.component';
 import { NDComponent } from './nd/nd.component';
 import { NdDialogComponent } from './nd/nd-dialog/nd-dialog.component';
 import { LVComponent } from './lv/lv.component';
+import { LvDialogComponent } from './lv/lv-dialog/lv-dialog.component';
+import { ValVidComponent } from './val-vid/val-vid.component';
+import { ValVidDialogComponent } from './val-vid/val-vid-dialog/val-vid-dialog.component';
+import { RatingModule } from 'ngx-bootstrap/rating';
+import { NgxYoutubePlayerModule } from 'ngx-youtube-player';
+import { RaComponent } from './ra/ra.component';
+import { RaDialogComponent } from './ra/ra-dialog/ra-dialog.component';
+import { ComentariosComponent } from './comentarios/comentarios.component';
+import { ComentariosDialogComponent } from './comentarios/comentarios-dialog/comentarios-dialog.component';
+import { TitlecaseComponent } from './titlecase/titlecase.component';
+
 
 
 
@@ -59,14 +70,24 @@ import { LVComponent } from './lv/lv.component';
     RhuDialogComponent,
     NDComponent,
     NdDialogComponent,
-    LVComponent
+    LVComponent,
+    LvDialogComponent,
+    ValVidComponent,
+    ValVidDialogComponent,
+    RaComponent,
+    RaDialogComponent,
+    ComentariosComponent,
+    ComentariosDialogComponent,
+    TitlecaseComponent
     
   ],
   imports: [
     CommonModule,
     RouterModule,
     DashboardRoutingModule,
-    SharedModule
+    SharedModule,
+    RatingModule.forRoot(),
+    NgxYoutubePlayerModule.forRoot() 
   ],
   exports:[
     SidenavComponent,

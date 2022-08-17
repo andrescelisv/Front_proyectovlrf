@@ -1,15 +1,85 @@
 import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+export interface PeriodicElement {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string
+}
 
+const ELEMENT_DATA: PeriodicElement[] = [
+  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
+  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
+  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
+  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
+  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
+  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
+  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
+  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
+  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'}
+];
 @Component({
   selector: 'app-template',
   templateUrl: './template.component.html',
   styleUrls: ['./template.component.scss']
 })
-export class TemplateComponent implements OnInit {
+export class TemplateComponent {
 
-  constructor() { }
+  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
+  
+  dataSource = new MatTableDataSource(ELEMENT_DATA);
 
-  ngOnInit(): void {
+  applyFilter(event: Event) {
+    console.log(ELEMENT_DATA);
+    this.dataSource.filterPredicate = (d: any, filter: string) => {
+      //const textToSearch = d[column] && d[column].toLowerCase() || '';
+      console.log(d.name);
+      console.log(filter);  
+      return true;
+    };
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    console.log(this.dataSource.filter);
+    console.log(this.dataSource.filterPredicate);
+   
   }
+
+
+
+
+    // Custom filter method fot Angular Material Datatable
+    createFilter() {
+      let filterFunction = function (data: any, filter: string): boolean {
+        let searchTerms = JSON.parse(filter);
+        let isFilterSet = false;
+        for (const col in searchTerms) {
+          if (searchTerms[col].toString() !== '') {
+            isFilterSet = true;
+          } else {
+            delete searchTerms[col];
+          }
+        }
+
+  
+        let nameSearch = () => {
+          let found = false;
+          if (isFilterSet) {
+            for (const col in searchTerms) {
+              searchTerms[col].trim().toLowerCase().split(' ').forEach((word: any) => {
+                if (data[col].toString().toLowerCase().indexOf(word) != -1 && isFilterSet) {
+                  found = true
+                }
+              });
+            }
+            return found
+          } else {
+            return true;
+          }
+        }
+        return nameSearch()
+      }
+      return filterFunction
+    }
 
 }

@@ -104,6 +104,22 @@ export class NdDialogComponent{
   showAlertMat:boolean= false;  //Muestra un toots de alerta para materia
   slider1:number=0;
   valor1:number=0;
+  selectionins:any[]=[];
+  selectionest:any[]=[];
+  selectiondoc:any[]=[];
+  selectiondba:any[]=[];
+  verificar:boolean=true;
+  activate:boolean=false;
+  varnombre:string="";
+  probar:boolean=false;
+  probarclick:boolean=false;
+  compclick:boolean=false;
+  compclickest:boolean=false;
+  compclickdoc:boolean=false;
+  compclickdba:boolean=false;
+  probarclickest:boolean=false;
+  probarclickdoc:boolean=false;
+  probarclickdba:boolean=false;
   /* Creating a variable called datos and assigning it a value of an object with the properties ok,
   message, and body. */
   datos: responseproyect={
@@ -236,7 +252,11 @@ export class NdDialogComponent{
     this.stateCtrlestudiantes.setValue(this.setest.map(value => value.nombre));
 
     let institucion = this.setins.map(value => value.nombre).toString();
-    console.log(institucion);
+    this.selectionins.push(this.setins[0].nombre);
+            
+    this.selectionest.push(this.setest[0].nombre);
+    this.selectiondoc.push(this.setdoc[0].nombre);
+    this.selectiondba.push(this.setdba[0].dba);
     
      //Coloca el vector con los valores obtenidos de la base de datos utilizando two data binding.
 
@@ -302,7 +322,36 @@ export class NdDialogComponent{
   }
   }
 
-  
+  verificacion(){
+    
+    let valor=" ";
+      this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"") );
+      this.datosestudiante.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectionest.toString().trim().toLowerCase() ?(this.compclickest=true) : ( "")));
+      this.datosdocente.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectiondoc.toString().trim().toLowerCase() ?(this.compclickdoc=true) : ( "")));
+      this.datosdba.forEach(state=> (state.identificador.trim().toLowerCase() === this.selectiondba.toString().trim().toLowerCase() ?(this.compclickdba=true) : ""));
+      if(this.compclick){(this.probarclick=true)}else{this.probarclick=false};
+      if(this.compclickest){this.probarclickest=true}else{this.probarclickest=false};
+      if(this.compclickdoc){this.probarclickdoc=true}else{this.probarclickdoc=false};
+      if(this.compclickdba){this.probarclickdba=true}else{this.probarclickdba=false};
+      this.compclick=false;
+      this.compclickest=false;
+      this.compclickdoc=false;
+      this.compclickdba=false;
+   
+      if(this.selectionins.length>0 && this.selectionest.length>0 && this.selectiondoc.length>0 && this.selectiondba.length>0 && this.datosinstitucion.length>0 && this.datosestudiante.length>0 && this.datosdocente.length>0 && 
+        this.datosdba.length>0 &&
+        (this.probarclick && this.probarclickest && this.probarclickdoc && this.probarclickdba)
+        
+        
+        ){
+        this.btnact=true;
+        this.probar=true;
+        //console.log("click verificación true");
+      }else{
+        this.btnact=false;
+        //console.log("click verificación false");
+      }
+     }
 
   selecteddba(event: MatAutocompleteSelectedEvent): void { 
     //Este evento se activa cuando el usuario selecciona un grado
@@ -476,6 +525,7 @@ export class NdDialogComponent{
   Ingresar(){
    //Cuando se presiona el botón ingresar
     /* Declaring variables and initializing them. */
+    if(this.probar){
     let filterValueArray:any[]=[];
     let filterDBAArray:any[]=[];
     let filterMateriaArray:any[]=[];
@@ -590,6 +640,46 @@ export class NdDialogComponent{
    
     if(this.data==null){ 
        //En el caos que sea un usuario nuevo se crea el objeto tareas de la siguiente forma
+       this._adminService.getCustomRA("ND/queryverificar",'dba','estudiante','docente','institucion',this.stateCtrldba.value.toString(),this.stateCtrlestudiantes.value.toString(),this.stateCtrldocentes.value.toString(),this.stateCtrl.value.toString()).subscribe({next: data => {
+        this.verificar = data.body;
+        
+        },
+        error:error => {
+        this.errors = error.message;
+          console.error('There was an error!', this.errors);
+        }
+      }
+      );
+      if(this.verificar){
+        //console.log(this.verificar);
+        this._snackBar.open('Espere un momento por favor',
+        '', {horizontalPosition: 'center',
+         verticalPosition: 'bottom',
+         duration: 8000});
+         this.btnact=false;
+  
+       }
+      
+      setTimeout(() => {
+       // console.log(this.verificar);
+      if(this.verificar){
+       this.activate=true;
+      this._snackBar.open('La ruta de aprendizaje ya se encuentra registrada',
+      '', {horizontalPosition: 'center',
+       verticalPosition: 'bottom',
+       duration: 8000});
+
+       this._snackBar.open('La ruta de aprendizaje ya se encuentra registrada',
+      '', {horizontalPosition: 'center',
+       verticalPosition: 'top',
+       duration: 8000});
+
+       
+       this.btnact=true;
+      }
+     
+      if(!this.verificar){
+        this.activate=false;
       const tarea:any={
         nd:[{
           fecha: ConvertedDate,
@@ -641,9 +731,9 @@ export class NdDialogComponent{
     );
     //Se espera un tiempo hasta obtener la respuesta del servidor
     setTimeout(() => {
-      console.log(this.datos);
+      //console.log(this.datos);
       if(this.datos.message=="success"){
-        this._snackBar.open('Nivel de desempeño agregado con exito',
+        this._snackBar.open('Ruta de aprendizaje creada con exito',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
          duration: 5000});
@@ -654,8 +744,14 @@ export class NdDialogComponent{
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
          duration: 5000});
+         this.btnact=true;
       }
     },2000);
+  
+    }
+  
+  },1000);
+    
     
     }
     else{
@@ -675,6 +771,9 @@ export class NdDialogComponent{
         estudiante:[],
         institucion:[{id:this.institucionid, nombre: this.institucionnombre}]
       }
+      for(let i=0;i<1;i++){
+        tarea.estudiante.push(this.estudiantenombre[i]);//Se añaden al objeto tarea la materia seleccionada por el estudiante.
+      }
         const respuesta=this._adminService.update(this.data.id,tarea,"nd/ndUpdate/").subscribe({next: data => {
         this.datos = data;
     console.log(this.datos);
@@ -691,6 +790,7 @@ export class NdDialogComponent{
       '', {horizontalPosition: 'center',
        verticalPosition: 'bottom',
        duration: 5000});
+       this.btnact=false;
     }else{
       this._snackBar.open('Datos erroneos',
       '', {horizontalPosition: 'center',
@@ -699,7 +799,7 @@ export class NdDialogComponent{
     }
     this.comprobar= true;
     this.router.navigate(['/admin/nd']);
-  
+    }
   }
     
   }

@@ -22,7 +22,7 @@
 
           <mat-form-field class="ancho" appearance="fill">
             <mat-label>Nombre</mat-label>
-            <input matInput autocomplete="off" formControlName="nombre">
+            <input matInput autocomplete="off" formControlName="nombre" [(ngModel)]="varnombre">
           </mat-form-field>
           <app-control-messages [control]="form.get('nombre')"></app-control-messages>
 
@@ -33,7 +33,10 @@
                    aria-label="State"
                    [matAutocomplete]="auto"
                    [formControl]="stateCtrl"
-                   
+                   [(ngModel)]="selectionins"
+                   (focus)="verificacion()"
+                   (blur)="verificacion()"
+                   (mouseleave)="verificacion()"
                    >
                 
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
@@ -57,7 +60,10 @@
                    aria-label="State"
                    [matAutocomplete]="autogrado"
                    [formControl]="stateCtrlgrado"
-                   
+                   [(ngModel)]="selectiongra"
+                 (focus)="verificacion()"
+                 (blur)="verificacion()"
+                 (mouseleave)="verificacion()"
                    >
                 
             <mat-autocomplete #autogrado="matAutocomplete" (optionSelected)="selectedgrado($event)">
@@ -72,6 +78,12 @@
           <app-control-messages  [control]="stateCtrlgrado"></app-control-messages>
           
          </div>
+
+         <div *ngIf="activate">
+
+          <span class="textoerrorinput">El grado ya se encuentra registrado</span>
+          <br>
+        </div> 
 
           <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
           <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>

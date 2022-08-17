@@ -79,7 +79,74 @@ export class TableConsumerAddComponent {
 
   }
 
- 
+  createFilter() {
+    let filterFunction = function (data: any, filter: string): boolean {
+      
+    
+  
+        
+  
+        let nameSearch = () => {
+         
+          if(data instanceof Object){
+            const entradas= Object.entries(data);
+            console.log(entradas);
+            for(let i=0;i<entradas.length;i++){
+              let entradas1 = Object.entries(entradas[i]);
+              console.log(entradas1)
+              let valor= entradas1[1];
+              console.log(valor);
+              
+              if(valor[1] instanceof Array){
+                console.log(typeof(valor[1]));
+                let array:Array<String> =Object.values(valor[1])
+                console.log(array[0]);
+               let internal:Array<String>= Object.values(array[0]);
+                console.log(internal);
+                console.log("true del array");
+                let retorno=internal.map((e:any)=>e instanceof Array ? e : e.toString().toLowerCase().trim().includes(filter.trim()
+                .toLowerCase()))
+                .map(e=>{return e});
+               
+                console.log(retorno);
+                if(internal.toString().toLowerCase().trim().includes(filter.trim().toLowerCase())){
+                  console.log("true interno del map");
+                  return true;
+                }
+                
+                
+              }else{
+                //if(valor[1] .toLowerCase().includes(filter.trim().toLowerCase())){
+                console.log(valor[1]) 
+                let valor2 = String(valor[1]);
+                console.log(valor2);
+
+                if(valor2.toLowerCase().includes(filter.trim().toLowerCase())){
+                  return true;
+                }
+               /* if(valor2.toLowerCase().includes(filter.trim().toLowerCase())){
+                 console.log("si");
+                 comprobar=true;*/
+                 console.log("false del primero")
+
+               }
+
+
+             
+
+
+            }
+            console.log("ultimo true")
+            return true;
+          
+        }else{
+          return false
+        }
+        }
+      return nameSearch()
+    }
+    return filterFunction
+  }
   
 
   getAll(){
@@ -152,12 +219,317 @@ export class TableConsumerAddComponent {
     console.log(this.tareas.body[0].id);
    
   }
+
+  
+
+
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
+    var comprobar:boolean;
+    this.dataSource.filterPredicate = this.dataSource.filterPredicate = (d: any, filter: string) => {
+      //const textToSearch = d[column] && d[column].toLowerCase() || '';
+
+     
+      switch (this.componente ) {
+        case "Comentario":
+            
+            if(
+              d.comentario[0].docente[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())
+              || d.comentario[0].estudiante[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+              d.comentario[0].grado[0].grado.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+              d.comentario[0].materia[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+              d.comentario[0].comentario.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+              d.comentario[0].fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+              d.videourl.trim().toLowerCase().includes(filter.trim().toLowerCase())
+              ){
+              
+                return true;
+              }else{
+                console.log("no");
+                return false;}
+              
+            
+        case "RA":
+          var comprobar:boolean=false;  
+          var valor=d.dba.map((e:any)=>{
+            console.log(e); 
+            
+            if(e.dba.trim().toLowerCase().includes(filter.trim().toLowerCase())){
+              console.log("valor: "+true);
+              comprobar=true;
+             
+                return true;
+            }
+            else{
+              if(comprobar){
+                comprobar=true;
+                return true;
+              }
+             else{
+              comprobar=false;
+              return false;
+             }
+            }
+          });
+          console.log("el valor obtenido: "+Object.entries(valor) );
+          if(
+            d.docente[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())
+            || d.estudiante[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.grado[0].grado.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.materia[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) || comprobar
+            ){
+            console.log(this.componente);
+              return true;
+            }else{
+              console.log("no");
+              return false;}
+            
+
+        case "Valoración Video":
+          if(
+            d.estudiante[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.videourl.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.val.trim().toLowerCase().includes(filter.trim().toLowerCase())
+            ){
+            console.log(this.componente);
+              return true;
+            }else{
+              console.log("no");
+              return false;}
+
+      case "Lista Videos":
+        var comprobar:boolean=false;  
+         var valor=d.lv[0].listaVideos.map((e:any)=>{
+            console.log(e); 
+            
+            if(e.video.trim().toLowerCase().includes(filter.trim().toLowerCase())){
+              console.log("valor: "+true);
+              comprobar=true;
+             
+                return true;
+            }
+            else{
+              if(comprobar){
+                comprobar=true;
+                return true;
+              }
+             else{
+              comprobar=false;
+              return false;
+             }
+            }
+          });
+        if(
+          d.lv[0].docente[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())
+          || d.estudiante[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+          d.lv[0].dba.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+          d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+          d.lv[0].fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) || comprobar
+          ){
+          console.log(this.componente);
+            return true;
+          }else{
+            console.log("no");
+            return false;}
+
+        case "ND":
+          
+          if(
+            String(d.nd[0].nd).trim().toLowerCase().includes(filter.trim().toLowerCase())
+            || d.estudiante[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.nd[0].dba.trim().toLowerCase().includes(filter.trim().toLowerCase()) || 
+            d.nd[0].docente[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.nd[0].fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+            ){
+            console.log(this.componente);
+              return true;
+            }else{
+              console.log("no");
+              return false;}
+
+        case "RHU":
+          
+          if(
+            d.dba[0].videovisto[0].videovisto.trim().toLowerCase().includes(filter.trim().toLowerCase())
+            || d.estudiante[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.dba[0].dba.trim().toLowerCase().includes(filter.trim().toLowerCase()) || 
+            d.dba[0].docente[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.dba[0].fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+            ){
+            console.log(this.componente);
+              return true;
+            }else{
+              console.log("no");
+              return false;}
+
+        case "Usuario":
+          if(
+            d.username.trim().toLowerCase().includes(filter.trim().toLowerCase())
+            || d.email.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.rol.trim().toLowerCase().includes(filter.trim().toLowerCase()) || 
+            d.password.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+            ){
+            console.log(this.componente);
+              return true;
+            }else{
+              console.log("no");
+              return false;}
+
+        case "Materia":
+          console.log(d.institucion[0].nombre);
+                if(
+                  d.area.trim().toLowerCase().includes(filter.trim().toLowerCase())
+                  || d.grado[0].grado.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                  String(d.institucion[0].nombre).trim().toLowerCase().includes(filter.trim().toLowerCase()) || 
+                  d.nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())  ||
+                  d.area.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+                  ){
+                  console.log(this.componente);
+                    return true;
+                  }else{
+                    console.log("no");
+                    return false;}
+
+          case "Institución":
+                      
+                            if(
+                              d.correoElectronico.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                              d.jornada.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+                              || d.telefono.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                              d.zona.trim().toLowerCase().includes(filter.trim().toLowerCase()) || 
+                              d.nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())  ||
+                              d.departamento.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                              d.ubicacion.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+                              ){
+                              console.log(this.componente);
+                                return true;
+                              }else{
+                                console.log("no");
+                                return false;}
+
+        case "Grado":
+                      
+                                  if(
+                                    d.grado.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                                    d.grupo.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+                                    || d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                                    d.jornada.trim().toLowerCase().includes(filter.trim().toLowerCase())
+                                    ){
+                                    console.log(this.componente);
+                                      return true;
+                                    }else{
+                                      console.log("no");
+                                      return false;}
+        
+        case "Estudiante":
+                      
+                                        if(
+                                          d.nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                                          d.cedula.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                                          d.fechaNacimiento.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+                                          || d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                                          d.correoElectronico.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                                          d.grado[0].grado.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+                                          d.materia[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())
+                                          ){
+                                          console.log(this.componente);
+                                            return true;
+                                          }else{
+                                            console.log("no");
+                                            return false;}
+
+        case "Docente":
+          var comprobar:boolean=false;  
+          var valor=d.grado.map((e:any)=>{
+             console.log(e); 
+             
+             if(e.grado.trim().toLowerCase().includes(filter.trim().toLowerCase())){
+               console.log("valor: "+true);
+               comprobar=true;
+              
+                 return true;
+             }
+             else{
+               if(comprobar){
+                 comprobar=true;
+                 return true;
+               }
+              else{
+               comprobar=false;
+               return false;
+              }
+             }
+           });
+
+           var comprobar1:boolean=false;  
+          var valor=d.materia.map((e:any)=>{
+             console.log(e); 
+             
+             if(e.nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())){
+               console.log("valor: "+true);
+               comprobar1=true;
+              
+                 return true;
+             }
+             else{
+               if(comprobar1){
+                 comprobar1=true;
+                 return true;
+               }
+              else{
+               comprobar1=false;
+               return false;
+              }
+             }
+           });
+
+          
+
+          if(
+            d.nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.cedula.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.fechaNacimiento.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
+            || d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            d.correoElectronico.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+            comprobar ||
+           comprobar1
+            ){
+            console.log(this.componente);
+              return true;
+            }else{
+              console.log("no");
+              return false;}
+            
+        default: 
+            // 
+            return false;
+     }
+     
+     
+
+
+    
+
+      
+      
+    };
+    console.log(this.dataSource);
     this.dataSource.filter = filterValue.trim().toLowerCase();
+    
+    
     if (this.dataSource.paginator) {
+      
       this.dataSource.paginator.firstPage();
     }
+
+    console.log(this.dataSource.filteredData)
+    console.log(this.dataSource.filterPredicate);
   }
 
   openDialogEdit(tarea:any){
@@ -179,7 +551,7 @@ export class TableConsumerAddComponent {
   openDialog() {
     this.varcomprobacion=true;
     const dialogRef= this.dialog.open(this.componenteDialog, {
-      width: '30%'
+      width: '40%'
     });
 
     dialogRef.afterClosed().subscribe(result => {

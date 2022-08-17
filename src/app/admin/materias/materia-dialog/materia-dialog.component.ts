@@ -58,12 +58,22 @@ export class MateriaDialogComponent {
 
   ]
   seleccionadogrado!: string;
+  selectionins:any[]=[];
+  selectiongra:any[]=[];
+  probar:boolean=false;
+  probarclick:boolean=false;
+  compclick:boolean=false;
+  compclickgrado:boolean=false;
+  probarclickgrado:boolean=false;
+  verificar:boolean=true;
+  activate:boolean=false;
+  varnombre:string="";
   constructor(
   private fb:FormBuilder,private _adminService: AdminService,private _snackBar: MatSnackBar, private router:Router,
   @Inject(MAT_DIALOG_DATA) public data: any) {
     const respuesta=this._adminService.getAll("institucion/all/").subscribe({next: data => {
       this.datosinstitucion = data.body;
-      console.log("datos institución: "+this.datosinstitucion.slice());
+     // console.log("datos institución: "+this.datosinstitucion.slice());
       },
       error:error => {
       this.errors = error.message;
@@ -84,19 +94,23 @@ export class MateriaDialogComponent {
             area:"",
             nombre:""
           });
-    
-          
+          this.form.controls['nombre'].setValue(this.valor());
+
+          setTimeout(() => {
             this.filtrarinstitucion = this.stateCtrl.valueChanges.pipe(
               startWith(''),
               map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
             );
-          console.log("this institucion: "+this.filtrarinstitucion.forEach(value=>console.log(value)));
+          
         
           this.filtrargrado = this.stateCtrlgrado.valueChanges.pipe(
             startWith(''),
             map(state => (state ? this._filtrargrado(state) : this.datosgrado.slice())),
           );
-        console.log("this grado: "+this.filtrargrado.forEach(value=>console.log(value)));
+          }, 200);
+          
+          
+       
       
         
         }else{
@@ -117,7 +131,7 @@ export class MateriaDialogComponent {
 
         this.stateCtrl.setValue(this.setins.map(((value: { nombre: any; }) => value.nombre)));
         this.stateCtrlgrado.setValue(this.setgrado.map(((value: { grado: any; }) => value.grado)));
-       console.log(this.stateCtrlgrado.value);
+      // console.log(this.stateCtrlgrado.value);
        this._adminService.getAll("Grado/queryname/"+this.setins.map(((value: { nombre: any; }) => value.nombre))+"/").subscribe({next: data => {
         this.datosgrado = data.body;
         
@@ -130,6 +144,15 @@ export class MateriaDialogComponent {
       );
         data.area=data.area[0].toUpperCase() + data.area.slice(1);
         this.selectArea=data.area;
+        this.form.controls['nombre'].setValue(this.valor());
+          
+
+            this.selectionins.push(this.setins[0].nombre);
+            
+            this.selectiongra.push(this.setgrado[0].grado);
+
+            this.varnombre=data.nombre;
+
 
         setTimeout(() => {
 
@@ -139,15 +162,14 @@ export class MateriaDialogComponent {
           startWith(''),
           map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
         );
-      console.log("this institucion: "+this.filtrarinstitucion.forEach(value=>console.log(value)));
+      
     
       this.filtrargrado = this.stateCtrlgrado.valueChanges.pipe(
         startWith(''),
         map(state => (state ? this._filtrargrado(state) : this.datosgrado.slice())),
       );
 
-      console.log("this institucion: "+this.filtrargrado.forEach(value=>console.log(value)));
-      console.log(this.datosgrado);
+   
         
         },1000);
         
@@ -162,6 +184,25 @@ selectedgrado(event: MatAutocompleteSelectedEvent): void {
 
 
   this.btnact=true;
+}
+
+valor(){
+
+
+  this.form.controls['nombre'].valueChanges.subscribe((value:String)=>{
+    
+    let palabras = value.split(" ");
+    palabras=palabras.map((palabra:string)=>{
+      return palabra[0].toUpperCase()+palabra.substring(1);
+    })
+   let palabra1=palabras.join(" ");
+  this.form.controls['nombre'].setValue(palabra1,{ emitEvent: false })   //Evitar ser un bucle generando nuevos eventos
+  
+   
+    
+  });
+ 
+ 
 }
 
 
@@ -194,7 +235,7 @@ selected(event: MatAutocompleteSelectedEvent): void {
 
         
   
-        console.log("filtrargrado"+this.filtrargrado.forEach(value=>console.log(value)));
+        //console.log("filtrargrado"+this.filtrargrado.forEach(value=>console.log(value)));
         
       }
       else{
@@ -209,36 +250,98 @@ selected(event: MatAutocompleteSelectedEvent): void {
     },3000)
 }
 
+verificacion(){
+  
+  //console.log(this.stateCtrlmateria.value);
+  
+  this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"" ));
+  this.datosgrado.forEach(state=> (state.grado.trim().toLowerCase() === this.selectiongra.toString().trim().toLowerCase() ?(this.compclickgrado=true) : ""));
+  if(this.compclick){this.probarclick=true}else{this.probarclick=false};
+  if(this.compclickgrado){this.probarclickgrado=true}else{this.probarclickgrado=false};
+  
+  this.compclick=false;
+  this.compclickgrado=false;
+  if(this.selectionins.length>0 && this.selectiongra.length>0 && this.datosgrado.length>0 && this.datosinstitucion.length>0 && (this.probarclick && this.probarclickgrado)){
+    this.btnact=true;
+    this.probar=true;
+    
+    //console.log("click verificación true");
+  }else{
+    this.btnact=false;
+    this.probar=false;
+    //console.log("click verificación false");
+  }
+ }
 
 
   Ingresar(){
 
-   
+    if(this.probar){
     const nombre = this.form.value.nombre;  
     const area = this.form.value.area;
     
-    console.log("area: "+area);
+    //console.log("area: "+area);
     const filterValuegrado = this.stateCtrlgrado.value;
     this.datosgrado=this.datosgrado.filter(state => state.grado.includes(filterValuegrado));
    
     const filterValue = this.stateCtrl.value;
-    console.log("filtervalue: "+filterValue);
+    //console.log("filtervalue: "+filterValue);
     this.datosinstitucion=this.datosinstitucion.filter(state => state.nombre.includes(filterValue));
 
 
     this.datosgrado.slice().forEach(value=>(this.gradoid=value.id));
     this.datosgrado.slice().forEach(value=>(this.gradovalue=value.grado));
-    console.log(this.gradovalue);
+  //  console.log(this.gradovalue);
 
     this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre,console.log(value.id)));
     this.datosinstitucion.slice().forEach(value=>(this.institucionid=value.id));
-    console.log(this.institucionnombre);
+    //console.log(this.institucionnombre);
    
    
 
-   console.log("data: "+this.data);
+  // console.log("data: "+this.data);
 
     if(this.data==null){ 
+      this._adminService.getCustomRA("Materia/queryverificar",'area','nombre','institucion','grado',this.form.value.area,this.form.value.nombre,this.stateCtrl.value.toString(),this.stateCtrlgrado.value.toString()).subscribe({next: data => {
+        this.verificar = data.body;
+        
+        },
+        error:error => {
+        this.errors = error.message;
+          console.error('There was an error!', this.errors);
+        }
+      }
+      );
+      if(this.verificar){
+        console.log(this.verificar);
+        this._snackBar.open('Espere un momento por favor',
+        '', {horizontalPosition: 'center',
+         verticalPosition: 'bottom',
+         duration: 8000});
+         this.btnact=false;
+  
+       }
+      
+      setTimeout(() => {
+       // console.log(this.verificar);
+      if(this.verificar){
+       this.activate=true;
+      this._snackBar.open('La materia ya se encuentra registrada',
+      '', {horizontalPosition: 'center',
+       verticalPosition: 'bottom',
+       duration: 8000});
+
+       this._snackBar.open('La materia ya se encuentra registrada',
+      '', {horizontalPosition: 'center',
+       verticalPosition: 'top',
+       duration: 8000});
+
+       
+       this.btnact=true;
+      }
+     
+      if(!this.verificar){
+        this.activate=false;
       const tarea={
         grado:[{grado: this.gradovalue, id:this.gradoid}],
         nombre:nombre,
@@ -260,20 +363,26 @@ selected(event: MatAutocompleteSelectedEvent): void {
       }
       );
       setTimeout(() => {
-        console.log(this.datos);
+        //console.log(this.datos);
         if(this.datos.message=="success"){
-          this._snackBar.open('Materia creada con exito',
+          this._snackBar.open('Materia actualizada con exito',
           '', {horizontalPosition: 'center',
            verticalPosition: 'bottom',
            duration: 5000});
            this.btnact=false;
         }else{
+          //Se utiliza un snackBar para visualizar la respuesta del servidor
           this._snackBar.open('Datos erroneos',
           '', {horizontalPosition: 'center',
            verticalPosition: 'bottom',
            duration: 5000});
+           this.btnact=true;
         }
       },2000);
+    
+      }
+    
+    },1000);
    
 
 
@@ -302,7 +411,7 @@ selected(event: MatAutocompleteSelectedEvent): void {
     setTimeout(() => {
       console.log(this.datos);
       if(this.datos.message=="success"){
-        this._snackBar.open('Grado creado con exito',
+        this._snackBar.open('Materia actualizada con exito',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
          duration: 5000});
@@ -316,7 +425,7 @@ selected(event: MatAutocompleteSelectedEvent): void {
     },2000);
  
   this.router.navigate(['/admin/materias']);
-
+  }
 }
 
 } 

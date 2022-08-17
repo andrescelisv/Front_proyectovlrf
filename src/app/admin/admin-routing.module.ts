@@ -14,6 +14,11 @@ import { AppComponent } from '../app.component';
 import { LoginModule } from '../login.module';
 import { RHUComponent } from './rhu/rhu.component';
 import { NDComponent } from './nd/nd.component';
+import { TemplateComponent } from './template/template.component';
+import { LVComponent } from './lv/lv.component';
+import { ValVidComponent } from './val-vid/val-vid.component';
+import { RaComponent } from './ra/ra.component';
+import { ComentariosComponent } from './comentarios/comentarios.component';
 
 
 const routes: Routes = [
@@ -29,6 +34,11 @@ const routes: Routes = [
    {path:'usuario', component: UsuarioComponent},
    {path:'rhu', component: RHUComponent},
    {path:'nd', component: NDComponent},
+   {path:'lv', component: LVComponent},
+   {path:'valvideos', component: ValVidComponent},
+   {path:'ra', component: RaComponent},
+   {path:'comentario', component: ComentariosComponent},
+   {path:'tc', component: TemplateComponent},
    {path:'logout',component:UsuarioComponent,children:[
    {path:'login', component: ApplicationModule}]}
 ];

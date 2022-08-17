@@ -25,23 +25,35 @@ export interface interfacemunicipio {
 export class InstitucionDialogComponent {
 
   btnact=false;
+  probar:boolean=false;
+  probarclick:boolean=false;
+  compclick:boolean=false;
+  compclickgrado:boolean=false;
+  probarclickgrado:boolean=false;
   seleccionado:string="";
   errors:string="";
   seleccionadoMunicipio="";
   Departamento:string="";
   Municipio:string="";
-  
+  selectionmun:any[]=[];
+  selectiondep:any[]=[];
   datos:any;
   form!: FormGroup;
   loading=false;
   spinner=false;
   selectJornada:string="";
+  setmun:any[]=[];
+  verificar:boolean=true;
+  activate:boolean=false;
+//Almacena los datos procedentes del table-consumer-add que corresponden con institución 
+  setdep:any[]=[];
   selectZona:string="";
   stateCtrl = new FormControl('',[Validators.required]); 
   stateCtrlmunicipio = new FormControl('',[Validators.required]); 
   filtrarDepartamento!: Observable<interfacedepartamento[]>;
   filtrarmunicipio!: Observable<interfacemunicipio[]>;
   datosmunicipio:any[]=[];
+  varnombre:string="";
   datosdepartamento:any[]=[
     { nombre: "Amazonas"},
     {nombre:"Antioquia"},
@@ -107,14 +119,15 @@ export class InstitucionDialogComponent {
             startWith(''),
             map(state => (state ? this._filtrardepartamento(state) : this.datosdepartamento.slice())),
           );
-        console.log("this institucion: "+this.filtrarDepartamento.forEach(value=>console.log(value)));
+       
       
+        this.form.controls['nombre'].setValue(this.valor());
       
       
       }else{
        
         this.stateCtrlmunicipio.enable();
-        this.btnact=true;
+        //this.btnact=true;
         this.spinner=true;
        
         
@@ -129,18 +142,76 @@ export class InstitucionDialogComponent {
       });
       this.stateCtrl.setValue(data.departamento);
       this.stateCtrlmunicipio.setValue(data.municipio);
-      console.log(data.jornada);
-      console.log(data.zona);
+      
+     
       this.selectJornada=data.jornada;
+     
       this.selectZona=data.zona;
       
-  
+      this.setmun=data.municipio;  //Obtiene los datos de institución de la base de datos, apartir de la consulta realizada inicialmente
+    this.setdep=data.departamento;  //Obtiene los datos de grado de la base de datos, apartir de la consulta realizada inicialmente
+    
+        this.selectiondep.push(this.setdep);
+        
+        this.selectionmun.push(this.setmun);
+        this.varnombre=data.nombre;
+        const respuesta=this._adminService.getAll("Departamento_municipio/queryname/"+this.setdep+"/").subscribe({next: data => {
+          this.datosmunicipio = data.body;
+          
+          },
+          error:error => {
+          this.errors = error.message;
+            console.error('There was an error!', this.errors);
+          }
+        }
+        );
+       
+       
+        
+        this.stateCtrl.clearValidators();
+        this.stateCtrl.addValidators(Validators.required);
+        this.stateCtrlmunicipio.clearValidators();
+        this.stateCtrlmunicipio.addValidators(Validators.required);
+        this.form.controls['nombre'].setValue(this.valor());
+
+        setTimeout(()=>{
+          this.filtrarDepartamento= this.stateCtrl.valueChanges.pipe(
+            startWith(''),
+            map(state => (state ? this._filtrardepartamento(state) : this.datosdepartamento.slice())),
+          );
+        
+      
+        this.filtrarmunicipio = this.stateCtrlmunicipio.valueChanges.pipe(
+          startWith(''),
+          map(state => (state ? this._filtrarmunicipio(state) : this.datosmunicipio.slice())),
+        );
+        },500);
+       
       
     }
   }
 
-    Ingresar(){
+  valor(){
 
+
+    this.form.controls['nombre'].valueChanges.subscribe((value:String)=>{
+      
+      let palabras = value.split(" ");
+      palabras=palabras.map((palabra:string)=>{
+        return palabra[0].toUpperCase()+palabra.substring(1);
+      })
+     let palabra1=palabras.join(" ");
+    this.form.controls['nombre'].setValue(palabra1,{ emitEvent: false })   //Evitar ser un bucle generando nuevos eventos
+    
+     
+      
+    });
+   
+   
+  }
+
+    Ingresar(){
+      if(this.probar){
       const nombre = this.form.value.nombre;
       const ubicacion = this.form.value.ubicacion; 
       const telefono = this.form.value.telefono;
@@ -151,6 +222,46 @@ export class InstitucionDialogComponent {
 
 
       if(this.data==null){ 
+        this._adminService.getCustomRA("institucion/queryverificar",'nombre','departamento','municipio','zona',nombre,this.stateCtrl.value.toString(),this.stateCtrlmunicipio.value.toString(),zona).subscribe({next: data => {
+          this.verificar = data.body;
+          
+          },
+          error:error => {
+          this.errors = error.message;
+            console.error('There was an error!', this.errors);
+          }
+        }
+        );
+        if(this.verificar){
+          console.log(this.verificar);
+          this._snackBar.open('Espere un momento por favor',
+          '', {horizontalPosition: 'center',
+           verticalPosition: 'bottom',
+           duration: 8000});
+           this.btnact=false;
+    
+         }
+        
+        setTimeout(() => {
+         // console.log(this.verificar);
+        if(this.verificar){
+         this.activate=true;
+        this._snackBar.open('La institución ya se encuentra registrada',
+        '', {horizontalPosition: 'center',
+         verticalPosition: 'bottom',
+         duration: 8000});
+  
+         this._snackBar.open('La institución ya se encuentra registrada',
+        '', {horizontalPosition: 'center',
+         verticalPosition: 'top',
+         duration: 8000});
+  
+         
+         this.btnact=true;
+        }
+       
+        if(!this.verificar){
+          this.activate=false;
         const tarea={
           nombre:nombre,
           ubicacion:ubicacion,
@@ -158,8 +269,8 @@ export class InstitucionDialogComponent {
           zona:zona,
           jornada:jornada,
           correoElectronico:correoElectronico,
-          municipio: this.Municipio,
-          departamento: this.Departamento  //grado= this.datosgrado
+          municipio: this.stateCtrlmunicipio.value,
+          departamento: this.stateCtrl.value  //grado= this.datosgrado
         }
         
         const respuesta=this._adminService.create(tarea,"institucion/addInstitucion/").subscribe({next: data => {
@@ -174,20 +285,27 @@ export class InstitucionDialogComponent {
         }
         );
         setTimeout(() => {
-          console.log(this.datos);
+          //console.log(this.datos);
           if(this.datos.message=="success"){
-            this._snackBar.open('Docente creado con exito',
+            this._snackBar.open('Institución agregada con exito',
             '', {horizontalPosition: 'center',
              verticalPosition: 'bottom',
              duration: 5000});
              this.btnact=false;
           }else{
+            //Se utiliza un snackBar para visualizar la respuesta del servidor
             this._snackBar.open('Datos erroneos',
             '', {horizontalPosition: 'center',
              verticalPosition: 'bottom',
              duration: 5000});
+             this.btnact=true;
           }
         },2000);
+      
+        }
+      
+      },1000);
+     
      
 
 
@@ -201,9 +319,10 @@ export class InstitucionDialogComponent {
         zona:zona,
         jornada:jornada,
         correoElectronico:correoElectronico,
-        municipio: this.Municipio,
-        departamento: this.Departamento,
+        municipio: this.stateCtrlmunicipio.value.toString(),
+        departamento: this.stateCtrl.value.toString() 
       }
+      console.log(tarea);
         const respuesta=this._adminService.update(this.data.id,tarea,"institucion/institucionUpdate/").subscribe({next: data => {
         this.datos = data;
     console.log(this.datos);
@@ -215,23 +334,52 @@ export class InstitucionDialogComponent {
       }
       );
   
-    if(this.datos.ok==true){
-      this._snackBar.open('Usuario actualizado con exito',
-      '', {horizontalPosition: 'center',
-       verticalPosition: 'bottom',
-       duration: 5000});
-    }else{
-      this._snackBar.open('Datos erroneos',
-      '', {horizontalPosition: 'center',
-       verticalPosition: 'bottom',
-       duration: 5000});
-    }
+      setTimeout(() => {
+        console.log(this.datos);
+        if(this.datos.message=="success"){
+          this._snackBar.open('Institución actualizada con exito',
+          '', {horizontalPosition: 'center',
+           verticalPosition: 'bottom',
+           duration: 5000});
+           this.btnact=false;
+        }else{
+          this._snackBar.open('Datos erroneos',
+          '', {horizontalPosition: 'center',
+           verticalPosition: 'bottom',
+           duration: 5000});
+        }
+      },2000);
    
-    this.router.navigate(['/admin/docentes']);
+    this.router.navigate(['/admin/institucion']);
   
   }
+}
 
   } 
+
+  verificacion(){
+  
+    //console.log(this.stateCtrlmateria.value);
+    console.log(this.datosmunicipio);
+    this.datosdepartamento.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectiondep.toString().trim().toLowerCase() ? (this.compclick=true,console.log("entre")):"",console.log(state.nombre.trim().toLowerCase()) ));
+    this.datosmunicipio.forEach(state=> (state.municipio.trim().toLowerCase() === this.selectionmun.toString().trim().toLowerCase() ?(this.compclickgrado=true,console.log("entre")) : "",console.log(state.municipio.trim().toLowerCase())));
+    if(this.compclick){this.probarclick=true}else{this.probarclick=false};
+    if(this.compclickgrado){this.probarclickgrado=true}else{this.probarclickgrado=false};
+    
+    this.compclick=false;
+    this.compclickgrado=false;
+    
+    if(this.selectiondep.length>0 && this.selectionmun.length>0 && this.datosmunicipio.length>0 && this.datosdepartamento.length>0 && (this.probarclick && this.probarclickgrado)){
+      this.btnact=true;
+      this.probar=true;
+      
+      //console.log("click verificación true");
+    }else{
+      this.btnact=false;
+      this.probar=false;
+      //console.log("click verificación false");
+    }
+   }
 
     selectedMunicipio(event: MatAutocompleteSelectedEvent): void {
       this.seleccionadoMunicipio=(event.option.viewValue);

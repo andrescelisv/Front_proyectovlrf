@@ -1,31 +1,61 @@
-<h1 mat-dialog-title>Añadir Institución formulario</h1>
+<h1 mat-dialog-title>Añadir Grado formulario</h1>
 
 <div mat-dialog-content>
     <form [formGroup]="form" (ngSubmit)="Ingresar()">
         <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
         <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
-        <h1>Añadir Institucion</h1>
+        <h1>Añadir Grado</h1>
+        
+        <mat-form-field  appearance="fill">
+
+          <mat-label>Institucion</mat-label>
+          <input matInput
+                 aria-label="State"
+                 [matAutocomplete]="auto"
+                 [formControl]="stateCtrl"
+                 [(ngModel)]="selectionins"
+                 (focus)="verificacion()"
+                 (blur)="verificacion()"
+                 (mouseleave)="verificacion()"
+                 >
+              
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
+              
+      <span>{{state.nombre}}</span> 
+              
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      
+        <app-control-messages  [control]="stateCtrl"></app-control-messages>
+
+         <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinner">
 
         <mat-form-field  appearance="fill">
 
-            <mat-label>Grado</mat-label>
-            <input matInput
-                   aria-label="State"
-                   [matAutocomplete]="autogrado"
-                   [formControl]="stateCtrlgrado"
-                   
-                   >
-                
-            <mat-autocomplete #autogrado="matAutocomplete" (optionSelected)="selectedgrado($event)">
-              <mat-option *ngFor="let state of filtrargrado | async" [value]="state.grado">
-                
-        <span>{{state.grado}}</span> 
-                
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
+          <mat-label>Grado</mat-label>
+          <input matInput
+                 aria-label="State"
+                 [matAutocomplete]="autogrado"
+                 [formControl]="stateCtrlgrado"
+                 [(ngModel)]="selectiongra"
+                 (focus)="verificacion()"
+                 (blur)="verificacion()"
+                 (mouseleave)="verificacion()"
+                 >
+              
+          <mat-autocomplete #autogrado="matAutocomplete" (optionSelected)="selectedgrado($event)">
+            <mat-option *ngFor="let state of filtrargrado | async" [value]="state.grado">
+              
+      <span>{{state.grado}}</span> 
+              
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-          <app-control-messages  [control]="stateCtrlgrado"></app-control-messages>
+        <app-control-messages  [control]="stateCtrlgrado"></app-control-messages>
 
           <mat-form-field appearance="fill">
             <mat-label>Jornada</mat-label>
@@ -42,26 +72,14 @@
           </mat-form-field>
           <app-control-messages [control]="form.get('grupo')"></app-control-messages>
 
-          <mat-form-field  appearance="fill">
+       
+          </div>
+          
+          <div *ngIf="activate">
 
-            <mat-label>Institucion</mat-label>
-            <input matInput
-                   aria-label="State"
-                   [matAutocomplete]="auto"
-                   [formControl]="stateCtrl"
-                   
-                   >
-                
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-              <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
-                
-        <span>{{state.nombre}}</span> 
-                
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-        
-          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+            <span class="textoerrorinput">El grado ya se encuentra registrado</span>
+            <br>
+          </div> 
 
           <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
           <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>

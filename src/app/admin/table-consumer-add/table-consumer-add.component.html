@@ -12,8 +12,8 @@
 
 </mat-toolbar>
 <mat-form-field appearance="standard">
-    <mat-label>Filter</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="Filtrar" #input autocomplete="off">
+    <mat-label>Buscar</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Buscar" #input autocomplete="off">
   </mat-form-field>
   <div class="mat-elevation-z8">
 
@@ -44,18 +44,33 @@
             <div *ngFor="let val of element | keyvalue">
 
               
-            <div *ngIf="item === 'docente'">
+            <div *ngIf="item === 'docente' ">
                
-               <div *ngIf="val.key == 'dba'">
+                            
+
+              <div *ngIf="val.key == 'lv' || val.key == 'nd' || val.key == 'dba' || val.key == 'comentario' ">
+
                       
+               
+                
                 <div *ngIf="$any(val).value.length> 0">
+                 
+                  
+
+                
                    
                   <div *ngFor="let valor of $any(val).value; let i = index">
-                      
+
+                    <div *ngIf="valor.docente == null; else after">
+                     
+                    </div>
+    
+                    <ng-template #after>
+                     
                     <div *ngIf="valor.docente.length > 0 ">
                       
                         <div *ngFor="let valordocente of $any(valor.docente); let i = index">
-                          
+                                
                                 {{valordocente.nombre}}
                         </div>
 
@@ -64,36 +79,75 @@
                   
                   
                  
-                  
+                  </ng-template>
                   </div>
+                
                 </div>
-              </div>
-
-              <div *ngIf="val.key == 'nd'">
-                      
-                <div *ngIf="$any(val).value.length> 0">
-                   
-                  <div *ngFor="let valor of $any(val).value; let i = index">
-                      
-                    <div *ngIf="valor.docente.length > 0 ">
-                      
-                        <div *ngFor="let valordocente of $any(valor.docente); let i = index">
-                          
-                                {{valordocente.nombre}}
-                        </div>
-
-
-                    </div>
-                  
-                  
-                 
-                  
-                  </div>
-                </div>
+             
               </div>
      
                
              </div>
+
+             <div *ngIf="item === 'dba'">
+               
+              <div *ngIf="val.key == 'lv'">
+                     
+                <div *ngIf="$any(val).value.length> 0">
+                  
+                  <div *ngFor="let valor of $any(val).value; let i = index">
+                               {{valor.dba}}
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div *ngIf="item === 'fecha'">
+               
+              <div *ngIf="val.key == 'lv'">
+                     
+                <div *ngIf="$any(val).value.length> 0">
+                  
+                  <div *ngFor="let valor of $any(val).value; let i = index">
+                              {{valor.fecha}}
+                               
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+
+            <div *ngIf="item === 'lista Videos'">
+               
+              <div *ngIf="val.key == 'lv'">
+                     
+               <div *ngIf="$any(val).value.length> 0">
+                  
+                 <div *ngFor="let valor of $any(val).value; let i = index">
+                     
+                   <div *ngIf="valor.listaVideos.length > 0 ">
+                     
+                       <div *ngFor="let valorvideovisto of $any(valor.listaVideos); let i = index">
+                         
+                               {{valorvideovisto.video}}
+                       </div>
+
+
+                   </div>
+                 
+                 
+                
+                 
+                 </div>
+               </div>
+             </div>
+    
+              
+            </div>
 
              <div *ngIf="item === 'dba'">
                
@@ -153,13 +207,132 @@
     
               
             </div>
+            
+            <div *ngIf="item === 'estudiante'">
+               
+              <div *ngIf="val.key == 'comentario'">
+                     
+               <div *ngIf="$any(val).value.length> 0">
+                  
+                 <div *ngFor="let valor of $any(val).value; let i = index">
+                     
+                   <div *ngIf="valor.estudiante.length > 0 ">
+                     
+                       <div *ngFor="let valorestudiante of $any(valor.estudiante); let i = index">
+                         
+                               {{valorestudiante.nombre}}
+                       </div>
 
-             
+
+                   </div>
+                 
+                 
+                
+                 
+                 </div>
+               </div>
+             </div>
+    
+              
+            </div>
+
+            
+
+            <div *ngIf="item === 'grado'">
+               
+              <div *ngIf="val.key == 'comentario'">
+                     
+               <div *ngIf="$any(val).value.length> 0">
+                  
+                 <div *ngFor="let valor of $any(val).value; let i = index">
+                     
+                   <div *ngIf="valor.grado.length > 0 ">
+                     
+                       <div *ngFor="let valorgrado of $any(valor.grado); let i = index">
+                         
+                               {{valorgrado.grado}}
+                       </div>
+
+
+                   </div>
+                 
+                 
+                
+                 
+                 </div>
+               </div>
+             </div>
+    
+              
+            </div>
+
+            <div *ngIf="item === 'materia'">
+               
+              <div *ngIf="val.key == 'comentario'">
+                     
+               <div *ngIf="$any(val).value.length> 0">
+                  
+                 <div *ngFor="let valor of $any(val).value; let i = index">
+                     
+                   <div *ngIf="valor.materia.length > 0 ">
+                     
+                       <div *ngFor="let valormateria of $any(valor.materia); let i = index">
+                         
+                               {{valormateria.nombre}}
+                       </div>
+
+
+                   </div>
+                 
+                 
+                
+                 
+                 </div>
+               </div>
+             </div>
+    
+              
+            </div>
+
+            <div *ngIf="item === 'fecha'">
+               
+              <div *ngIf="val.key == 'comentario'">
+                     
+                <div *ngIf="$any(val).value.length> 0">
+                  
+                  <div *ngFor="let valor of $any(val).value; let i = index">
+                              {{valor.fecha}}
+                               
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <div *ngIf="item === 'comentario'">
+               
+              <div *ngIf="val.key == 'comentario'">
+                     
+                <div *ngIf="$any(val).value.length> 0">
+                  
+                  <div *ngFor="let valor of $any(val).value; let i = index">
+                              {{valor.comentario}}
+                               
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            
                   
 
                 <div *ngIf="val.key == item">
 
-                  <div *ngIf="val.key != 'institucion' && val.key !='grado' && val.key != 'materia' && val.key != 'dba' && val.key!='videovisto' && val.key!='estudiante' && val.key!='docente' && val.key!='nd'">
+                  <div *ngIf="val.key != 'institucion' && val.key !='grado' && val.key != 'materia' && val.key != 'dba' && val.key!='videovisto' && val.key!='estudiante' && val.key!='docente' && val.key!='nd' && val.key!='comentario' ">
+                  
                     {{val.value}}
                
                   </div>
@@ -175,7 +348,12 @@
 
                   <div *ngIf="val.key == 'dba'">
                     <div *ngFor="let valor of $any(val).value">
+                      <div *ngIf="valor.fecha!= null; else template">
                       {{valor.dba}} | {{valor.fecha}}  
+                    </div>
+                    <ng-template #template>
+                      {{valor.dba}}  
+                    </ng-template>
                     </div>
                   
                   </div>
@@ -187,7 +365,7 @@
                   
                   </div>
 
-                  <div *ngIf="val.key == 'estudiante'">
+                  <div *ngIf="val.key == 'estudiante' && item!='comentario'">
                     <div *ngFor="let valor of $any(val).value">
                       {{valor.nombre}} 
                       
@@ -195,13 +373,19 @@
                   
                   </div>
                   
-                 
+                  <div *ngIf="val.key == 'docente' && item!='comentario'">
+                    <div *ngFor="let valor of $any(val).value">
+                      {{valor.nombre}} 
+                      
+                    </div>
+                  
+                  </div>
                   
                   
 
                 
 
-                  <div *ngIf="val.key == 'grado'">
+                  <div *ngIf="val.key == 'grado' && item!='comentario'">
                    
                    <!-- {{$any(val).value}}-->
                    
@@ -232,7 +416,7 @@
                   
                   </div>
 
-                  <div *ngIf="val.key == 'materia'">
+                  <div *ngIf="val.key == 'materia' && item!='comentario'">
                     <div *ngFor="let valor of $any(val).value">
                       {{valor.nombre}}
                       

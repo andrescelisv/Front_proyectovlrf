@@ -7,8 +7,8 @@
         <h1>Añadir Docente</h1>
 
         <mat-form-field class="ancho" appearance="fill">
-            <mat-label>nombre</mat-label>
-            <input  matInput autocomplete="off" formControlName="nombre">
+            <mat-label>Nombre Completo</mat-label>
+            <input  matInput autocomplete="off" formControlName="nombre" [(ngModel)]="varnombre">
           </mat-form-field>
           <app-control-messages [control]="form.get('nombre')"></app-control-messages>
           <mat-form-field class="ancho" appearance="fill">
@@ -46,11 +46,19 @@
 
           <mat-form-field  appearance="fill">
             <mat-label>Institucion</mat-label>
+            <div *ngIf="showAlertgra" class="col-md-7 mb-2">
+              <div class="alert alert-danger">
+                   <strong>No hay instituciones disponibles</strong>
+              </div>
+              </div>
             <input matInput
                    aria-label="State"
                    [matAutocomplete]="auto"
                    [formControl]="stateCtrl"
-                  
+                   [(ngModel)]="selectionins"
+                   (focus)="verificacion()"
+                   (blur)="verificacion()"
+                   (mouseleave)="verificacion()"
                    >
                 
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
@@ -69,13 +77,19 @@
 
           <mat-form-field  appearance="fill">
             <mat-label>Grado</mat-label>
-                   <div *ngIf="showAlertMat" class="col-md-7 mb-2">
+                   <div *ngIf="showAlertgra" class="col-md-7 mb-2">
                     <div class="alert alert-danger">
                          <strong>No hay grados disponibles para esta institución</strong>
                     </div>
                     </div>
                     
-                      <mat-select [formControl]="stateCtrlgrado" [(ngModel)]="selection" name="values" multiple>
+                      <mat-select [formControl]="stateCtrlgrado" 
+                      [(ngModel)]="selectiongra"
+                       (focus)="verificacion()"
+                       (blur)="verificacion()"
+                       (mouseleave)="verificacion()"
+                      
+                      name="values" multiple>
                 
                           <mat-select-trigger>
                              {{stateCtrlgrado.value?.[0] || ''}}
@@ -101,7 +115,10 @@
                     </div>
                     </div>
                     
-                      <mat-select [formControl]="stateCtrlmateria" [(ngModel)]="selectionmateria" name="values" multiple>
+                      <mat-select [formControl]="stateCtrlmateria" [(ngModel)]="selectionmateria"
+                      (focus)="verificacion()"
+                      (blur)="verificacion()"
+                      (mouseleave)="verificacion()" name="values" multiple>
                 
                           <mat-select-trigger>
                              {{stateCtrlmateria.value?.[0] || ''}}
@@ -143,6 +160,12 @@
           </mat-form-field>
           <app-control-messages  [control]="stateCtrlmateria"></app-control-messages>
         -->
+        </div>
+
+        <div *ngIf="activate">
+
+          <span class="textoerrorinput">El docente ya se encuentra registrado</span>
+          <br>
         </div>
 
           <div>

@@ -14,7 +14,10 @@
                    aria-label="State"
                    [matAutocomplete]="auto"
                    [formControl]="stateCtrl"
-                   
+                   [(ngModel)]="selectionins"
+                       (focus)="verificacion()"
+                       (blur)="verificacion()"
+                       (mouseleave)="verificacion()"
                    >
                 
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
@@ -35,6 +38,13 @@
                 <input matInput  autocomplete="off" formControlName="videovisto">
             </mat-form-field>
             <app-control-messages [control]="form.get('videovisto')"></app-control-messages>
+            
+            <div class="field-message" *ngIf="$any(form.get('videovisto')).value.indexOf('&')>0; else elseBlock">
+                       
+              <span class="textoerrorinput">Tiene un elemento de tipo & no correcto</span>
+              <br>
+          </div>
+          <ng-template #elseBlock></ng-template>
 
           <mat-form-field  appearance="fill">
             <mat-label>DBA</mat-label>
@@ -43,6 +53,10 @@
                    [matAutocomplete]="autodba"
                    [formControl]="stateCtrldba"
                    (change)="stateCtrldba"
+                   [(ngModel)]="selectiondba"
+                       (focus)="verificacion()"
+                       (blur)="verificacion()"
+                       (mouseleave)="verificacion()"
                    >
                    <div *ngIf="showAlert" class="col-md-7 mb-2">
                     <div class="alert alert-danger">
@@ -67,6 +81,10 @@
                    [matAutocomplete]="autodocente"
                    [formControl]="stateCtrldocentes"
                    (change)="stateCtrldocentes"
+                   [(ngModel)]="selectiondoc"
+                   (focus)="verificacion()"
+                   (blur)="verificacion()"
+                   (mouseleave)="verificacion()"
                    >
                    <div *ngIf="showAlert" class="col-md-7 mb-2">
                     <div class="alert alert-danger">
@@ -92,6 +110,10 @@
                        [matAutocomplete]="autoestudiante"
                        [formControl]="stateCtrlestudiantes"
                        (change)="stateCtrlestudiantes"
+                       [(ngModel)]="selectionest"
+                       (focus)="verificacion()"
+                       (blur)="verificacion()"
+                       (mouseleave)="verificacion()"
                        >
                        <div *ngIf="showAlert" class="col-md-7 mb-2">
                         <div class="alert alert-danger">
@@ -110,6 +132,12 @@
                   <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
 
         </div>
+
+        <div *ngIf="activate">
+
+          <span class="textoerrorinput">El registro de historial de usuario ya se encuentra registrado</span>
+          <br>
+        </div> 
 
           <div>
             <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
