@@ -1,0 +1,207 @@
+<h1 mat-dialog-title>Añadir comentarios formulario</h1>
+
+<div mat-dialog-content>
+    <form [formGroup]="form" (ngSubmit)="Ingresar()">
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir Comentario</h1>
+
+        <mat-form-field class="ancho" appearance="fill">
+            <mat-label>URL del video</mat-label>
+            <input  matInput autocomplete="off" formControlName="videourl">
+            
+            <ng-template #elseBlock></ng-template>
+          </mat-form-field>
+          <app-control-messages [control]="form.get('videourl')"></app-control-messages>
+          <div class="field-message" *ngIf="$any(form.get('videourl')).value.indexOf('&')>0; else elseBlock">
+                       
+            <span class="textoerrorinput">Tiene un elemento de tipo & no correcto</span>
+            <br>
+        </div>
+        <ng-template #elseBlock></ng-template>
+
+      
+
+          
+       
+          
+
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Comentario</mat-label>
+            <textarea matInput placeholder="Ingrese el comentario" formControlName="comentario"></textarea>
+          </mat-form-field>
+          <app-control-messages [control]="form.get('comentario')"></app-control-messages>
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Institucion</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="auto"
+                   [formControl]="stateCtrl"
+                  
+                   >
+                
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
+                
+        <span>{{state.nombre}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+
+          <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinner">
+
+            <mat-form-field  appearance="fill">
+                <mat-label>Materia</mat-label>
+                <input matInput
+                       aria-label="State"
+                       [matAutocomplete]="automateria"
+                       [formControl]="stateCtrlmateria"
+                       (change)="stateCtrlmateria"
+                       [(ngModel)]="selectionmat"
+                           (focus)="verificacion()"
+                           (blur)="verificacion()"
+                           (mouseleave)="verificacion()"
+                       >
+                       <div *ngIf="showAlert" class="col-md-7 mb-2">
+                        <div class="alert alert-danger">
+                             <strong>No hay materias disponibles para esta institución</strong>
+                        </div>
+                    </div>
+                <mat-autocomplete #automateria="matAutocomplete" (optionSelected)="selectedmateria($event)">
+                  <mat-option *ngFor="let state of filtrarmateria | async" [value]="state.nombre">
+                    <span>{{state.nombre}}</span>
+         
+                    
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              
+              <app-control-messages  [control]="stateCtrlmateria"></app-control-messages>
+
+              <mat-form-field  appearance="fill">
+                <mat-label>Grado</mat-label>
+                <input matInput
+                       aria-label="State"
+                       [matAutocomplete]="autogrado"
+                       [formControl]="stateCtrlgrado"
+                       (change)="stateCtrlgrado"
+                       [(ngModel)]="selectiongra"
+                       (focus)="verificacion()"
+                       (blur)="verificacion()"
+                       (mouseleave)="verificacion()"
+                       >
+                       <div *ngIf="showAlert" class="col-md-7 mb-2">
+                        <div class="alert alert-danger">
+                             <strong>No hay grados disponibles para esta institución</strong>
+                        </div>
+                    </div>
+                <mat-autocomplete #autogrado="matAutocomplete" (optionSelected)="selectedgrado($event)">
+                  <mat-option *ngFor="let state of filtrargrado | async" [value]="state.grado">
+                    <span>{{state.grado}}</span>
+         
+                    
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              
+              <app-control-messages  [control]="stateCtrlgrado"></app-control-messages>
+
+              <mat-form-field  appearance="fill">
+                <mat-label>Estudiante</mat-label>
+                <input matInput
+                       aria-label="State"
+                       [matAutocomplete]="autoestudiante"
+                       [formControl]="stateCtrlestudiantes"
+                       (change)="stateCtrlestudiantes"
+                       [(ngModel)]="selectionest"
+                           (focus)="verificacion()"
+                           (blur)="verificacion()"
+                           (mouseleave)="verificacion()"
+                       >
+                       <div *ngIf="showAlertEst" class="col-md-7 mb-2">
+                        <div class="alert alert-danger">
+                             <strong>No hay estudiantes disponibles</strong>
+                        </div>
+                    </div>
+                <mat-autocomplete #autoestudiante="matAutocomplete" (optionSelected)="selectedEstudiantes($event)">
+                  <mat-option *ngFor="let state of filtrarestudiantes | async" [value]="state.nombre">
+                    <span>{{state.nombre}}</span>
+         
+                    
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+    
+                  <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
+
+                  <mat-form-field  appearance="fill">
+                    <mat-label>Docente</mat-label>
+                    <input matInput
+                           aria-label="State"
+                           [matAutocomplete]="autodocente"
+                           [formControl]="stateCtrldocentes"
+                           (change)="stateCtrldocentes"
+                           [(ngModel)]="selectiondoc"
+                           (focus)="verificacion()"
+                           (blur)="verificacion()"
+                           (mouseleave)="verificacion()"
+                           >
+                           <div *ngIf="showAlertDoc" class="col-md-7 mb-2">
+                            <div class="alert alert-danger">
+                                 <strong>No hay dba disponibles</strong>
+                            </div>
+                        </div>
+                    <mat-autocomplete #autodocente="matAutocomplete" (optionSelected)="selectedDocentes($event)">
+                      <mat-option *ngFor="let state of filtrardocentes | async" [value]="state.nombre">
+                        <span>{{state.nombre}}</span>
+             
+                        
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+        
+                      <app-control-messages  [control]="stateCtrldocentes"></app-control-messages>
+
+          
+         <!-- <mat-form-field  appearance="fill">
+            <mat-label>Materia</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="automateria"
+                   [formControl]="stateCtrlmateria"
+                   (change)="stateCtrlmateria"
+                   >
+                   <div *ngIf="showAlertMat" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay materias disponibles para esta institución</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #automateria="matAutocomplete" (optionSelected)="selectedMateria($event)">
+              <mat-option *ngFor="let state of filtrarmateria | async" [value]="state.nombre">
+                <span>{{state.nombre}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <app-control-messages  [control]="stateCtrlmateria"></app-control-messages>
+        -->
+        </div>
+
+        <div *ngIf="activate">
+
+            <span class="textoerrorinput">El estudiante ya tiene un comentario registrado en el video</span>
+            <br>
+          </div>
+
+          <div>
+            <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+            <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </form>
+</div>

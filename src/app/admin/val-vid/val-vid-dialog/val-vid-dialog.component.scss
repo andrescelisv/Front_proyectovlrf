@@ -1,0 +1,42 @@
+.star {
+    font-size: 1.5rem;
+    color: #b0c4de;
+  }
+  .filled {
+    color: #1e90ff;
+  }
+  .bad {
+    color: #deb0b0;
+  }
+  .filled.bad {
+    color: #ff1e1e;
+  }
+
+  .mat-form-field{
+    width: 100%;
+}
+
+.loginimg{
+    width: 50%;
+    height: 80%;
+}
+
+input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid rgb(122, 122, 122);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.textoerrorinput{
+    color:red;
+    display: flex;
+    align-items: center;
+    font-size: small;
+    width: 140%;
+    height: 3px;
+    
+}

@@ -1,0 +1,176 @@
+<h1 mat-dialog-title>Añadir lista de videos</h1>
+
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir Lista de videos</h1>
+
+        <mat-spinner *ngIf="loadingInst" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinnerInst">   
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Institucion</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="auto"
+                   [formControl]="stateCtrl"
+                   [(ngModel)]="selectionins"
+                       (focus)="verificacion()"
+                       (blur)="verificacion()"
+                       (mouseleave)="verificacion()"
+                   >
+                
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
+                
+        <span>{{state.nombre}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+          
+          <mat-spinner *ngIf="loadingEst" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinnerEst">
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Estudiante</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autoestudiante"
+                   [formControl]="stateCtrlestudiantes"
+                   (change)="stateCtrlestudiantes"
+                   [(ngModel)]="selectionest"
+                       (focus)="verificacion()"
+                       (blur)="verificacion()"
+                       (mouseleave)="verificacion()"
+                   >
+                   <div *ngIf="showAlert" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay dba disponibles</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #autoestudiante="matAutocomplete" (optionSelected)="selectedEstudiantes($event)">
+              <mat-option *ngFor="let state of filtrarestudiantes| async" [value]="state.nombre">
+                <span>{{state.nombre}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+              <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
+        
+        </div>
+        <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinner">
+            <h1>Videos para añadir a lista</h1>
+            <div *ngFor="let control of listaVideosFieldAsFormArray.controls; let i = index;" formArrayName ='listaVideos'>
+
+                <div [formGroupName]="i">
+                    <div class="input-field">
+                    <input required aria-label="State" matInput type="text" placeholder="Video" class="input_add" 
+                    (focus)="verificacion()"
+                   (blur)="verificacion()"
+                   (mouseleave)="verificacion()"                    
+                    formControlName="listaVideos">
+                    </div>
+                    
+                    <div class="field-message" *ngIf="$any(form.get('listaVideos')).controls[i].controls.listaVideos.value.indexOf('&')>0; else elseBlock">
+                       
+                        <span class="textoerrorinput">Tiene un elemento de tipo & no correcto</span>
+                        <br>
+                    </div>
+                    <ng-template #elseBlock></ng-template>
+
+                    <div class="field-message" *ngIf="$any(form.get('listaVideos')).controls[i].controls.listaVideos.errors != null; else elseBlock">
+                       
+                        <span class="textoerrorinput">Requerido</span>
+                        <br>
+                    </div>
+                    <ng-template #elseBlock></ng-template>
+                    <button class="button" mat-flat-button color="warn" type="button" (click)="remove(i)" >Eliminar</button>
+                </div>
+              
+            </div>
+
+            <button class="button" mat-flat-button color="primary"  (click)="addControl()"> Añadir video </button>
+        
+            <app-control-messages [control]="form.get('listaVideos')"></app-control-messages>
+
+          <mat-form-field  appearance="fill">
+            <mat-label>DBA</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autodba"
+                   [formControl]="stateCtrldba"
+                   (change)="stateCtrldba"
+                   [(ngModel)]="selectiondba"
+                   (focus)="verificacion()"
+                   (blur)="verificacion()"
+                   (mouseleave)="verificacion()"
+                   >
+                   <div *ngIf="showAlert" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay dba disponibles</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #autodba="matAutocomplete" (optionSelected)="selecteddba($event)">
+              <mat-option *ngFor="let state of filtrardba | async" [value]="state.identificador">
+                <span>{{state.identificador}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <app-control-messages  [control]="stateCtrldba"></app-control-messages>
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Docente</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autodocente"
+                   [formControl]="stateCtrldocentes"
+                   (change)="stateCtrldocentes"
+                   [(ngModel)]="selectiondoc"
+                   (focus)="verificacion()"
+                   (blur)="verificacion()"
+                   (mouseleave)="verificacion()"
+                   >
+                   <div *ngIf="showAlert" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay dba disponibles</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #autodocente="matAutocomplete" (optionSelected)="selectedDocentes($event)">
+              <mat-option *ngFor="let state of filtrardocentes| async" [value]="state.nombre">
+                <span>{{state.nombre}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+              <app-control-messages  [control]="stateCtrldocentes"></app-control-messages>
+
+
+             
+
+        </div>
+
+        <div *ngIf="activate">
+
+          <span class="textoerrorinput">La lista de videos ya se encuentra registrada para el estudiante</span>
+          <br>
+        </div> 
+
+          <div>
+            <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+            <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" (click)="Ingresar()" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </div>
+        </form>
+</div>

@@ -1,0 +1,157 @@
+<h1 mat-dialog-title>Añadir valoración video</h1>
+<div mat-dialog-content>
+
+    <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+    <h1>Añadir Usuario</h1>
+
+     <form [formGroup]="form">
+        <p>Ingrese la valoración del video</p>
+
+    
+        <img src="./assets/agregar-usuario.png" alt="" class="loginimg">
+        <a href="https://www.flaticon.es/iconos-gratis/agregar-usuario" title="agregar usuario iconos">Agregar usuario iconos creados por Good Ware - Flaticon</a>
+        <h1>Añadir Lista de videos</h1>
+
+        <mat-spinner *ngIf="loadingInst" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinnerInst">   
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Institucion</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="auto"
+                   [formControl]="stateCtrl"
+                   [(ngModel)]="selectionins"
+                       (focus)="verificando()"
+                       (blur)="verificando()"
+                       (mouseleave)="verificando()"
+                   >
+                
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let state of filtrarinstitucion | async" [value]="state.nombre">
+                
+        <span>{{state.nombre}}</span> 
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          
+          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+          
+          <mat-spinner *ngIf="loadingEst" diameter="30" class="spinner"></mat-spinner>
+        <div *ngIf="spinnerEst">
+
+          <mat-form-field  appearance="fill">
+            <mat-label>Estudiante</mat-label>
+            <input matInput
+                   aria-label="State"
+                   [matAutocomplete]="autoestudiante"
+                   [formControl]="stateCtrlestudiantes"
+                   (change)="stateCtrlestudiantes"
+                   [(ngModel)]="selectionest"
+                   (focus)="verificando()"
+                   (blur)="verificando()"
+                   (mouseleave)="verificando()"
+                   >
+                   <div *ngIf="showAlert" class="col-md-7 mb-2">
+                    <div class="alert alert-danger">
+                         <strong>No hay dba disponibles</strong>
+                    </div>
+                </div>
+            <mat-autocomplete #autoestudiante="matAutocomplete" (optionSelected)="selectedEstudiantes($event)">
+              <mat-option *ngFor="let state of filtrarestudiantes| async" [value]="state.nombre">
+                <span>{{state.nombre}}</span>
+     
+                
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+              <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
+        
+        </div>
+            <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
+            <div *ngIf="spinner">
+    
+           
+              
+                    <div class="input-field">
+                        <mat-form-field class="ancho" appearance="fill">
+                            <mat-label>Ingrese el video a valorar</mat-label>
+                            <input placeholder="video" matInput  autocomplete="off" formControlName="listaVideos"
+                            (focus)="verificando()"
+                            (blur)="verificando()"
+                            (mouseleave)="verificando()"
+                            >
+                          </mat-form-field>
+                    </div>
+                    <div class="field-message" *ngIf="form.get('listaVideos')!.value.indexOf('&')>0; else elseBlock">
+                       
+                        <span class="textoerrorinput">Tiene un elemento de tipo & no correcto</span>
+                        <br>
+                    </div>
+                    <ng-template #elseBlock></ng-template>
+                    <div class="field-message" *ngIf="form.get('listaVideos')!.errors != null; else elseBlock">
+                       
+                        <span class="textoerrorinput">Requerido</span>
+                        <br>
+                    </div>
+                    <ng-template #elseBlock></ng-template>
+
+                    <div (mouseover)="changeText=true" (mouseout)="changeText=false">
+                      <span *ngIf="!changeText"></span>
+                      <span *ngIf="changeText">Seleccione la calificación del video, seleccionando la cantidad de estrellas que considere mas apropiadas</span>
+                
+                      <br>
+                      <br>
+
+                    <rating  style="color: #0275d8;font-size: 40px;" [(ngModel)]="rate" [ngModelOptions]="{standalone: true}" [max]="max" [readonly]="isReadonly">
+                    </rating>
+                
+                    <div class="card">
+                        <pre class="card-block card-header" style="margin:15px 0;">
+                        Rate: <b>{{rate}}</b>
+                    </pre>
+                    </div>
+
+           </div>
+
+          
+
+
+
+             
+
+            </div>
+            <br><br><br>
+            <div *ngIf="activate">
+
+              <span class="textoerrorinput">El video y el estudiante ya se encuentran registrados</span>
+              <br>
+            </div> 
+
+          <div>
+            <button   class="ancho boton" mat-flat-button color="warn" mat-dialog-close>Cerrar</button>
+            <button *ngIf="btnact" type="submit" class="ancho boton" mat-flat-button color="primary" (click)="Ingresar()" [disabled]="form.invalid">Guardar</button>
+          </div>
+        </div>
+        </form>
+        
+
+
+        <br>
+        <br>
+        <br>
+        <div 
+        
+        >
+         <youtube-player
+         [videoId]="id"
+         (ready)="savePlayer($event)"
+(mouseenter)="playVideo()"
+        (mouseleave)="pauseVideo()"
+         >
+        </youtube-player>
+      </div>
+       
+</div>
