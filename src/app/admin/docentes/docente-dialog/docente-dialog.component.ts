@@ -239,7 +239,7 @@ export class DocenteDialogComponent {
 
     /* The above code is taking the values of the array and mapping them to a new array. */
     const valormat=this.setmat.slice().map(value=>(value.nombre)); //Ingresa los valores almacenados en el vector materias
-    console.log(valormat);
+ 
     this.selectionmateria= valormat; //Coloca en el input los valores de materias.
 
     this.selectionins.push(this.setins[0].nombre);
