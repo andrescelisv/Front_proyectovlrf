@@ -74,6 +74,7 @@ export class EstudianteDialogComponentComponent{
   materianombre:any[]=[]; //Nombre de materia
   gradonombre:any[]=[]; 
   btnact=false;   //boton de guardar no activo por defecto
+  inicio=true;
   institucionnombre:string="";   //Nombre de institución
   institucionid:string="";      //id de institución
   showAlert:boolean=false;  //Muestra un toots de alerta para institución
@@ -97,6 +98,8 @@ export class EstudianteDialogComponentComponent{
   compclick:boolean=false;
   compclickgrado:boolean=false;
   probarclickgrado:boolean=false;
+  compclickmat:boolean=false;
+  probarclickmat:boolean=false;
 
 /* Creating an array of objects that have the same structure. */
   datosinstitucion:interfaceinstitucion[]=[
@@ -121,11 +124,11 @@ export class EstudianteDialogComponentComponent{
      /* The above code is calling the getAll method from the admin service. */
       const respuesta=this._adminService.getAll("institucion/all/").subscribe({next: data => {
         this.datosinstitucion = data.body;
-        //console.log("datos institución: "+this.datosinstitucion.slice());
+        
         },
         error:error => {
         this.errors = error.message;
-          //console.error('There was an error!', this.errors);
+          console.error('There was an error!', this.errors);
         }
       }
       );
@@ -148,11 +151,11 @@ export class EstudianteDialogComponentComponent{
     })
    
     
-   // console.log(this.data);
+
     //Verifica si es un usuario nuevo a ingresar
     if(data==null){
       //this.select='Admin';
-    
+      this.verificacion();
       //Inicializa todos los inputs del html
       this.form.setValue({
         nombre:"",
@@ -179,7 +182,7 @@ export class EstudianteDialogComponentComponent{
       //Ingresa cuando se va a editar un usuario
       this.stateCtrlgrado.enable(); //Habilita la busqueda y selección de grado
       this.stateCtrlmateria.enable();  //Habilita la busqueda y selección de materia
-  
+      this.verificacion();
       this.spinner=true;  //Muestra la información dentro del div que contiene el ngIf de spinner
      
       var re = /-/gi;  //Genera un string con la cadena de busqueda, es decir un "-" para la fecha
@@ -217,9 +220,9 @@ export class EstudianteDialogComponentComponent{
     this.selectionins.push(this.setins[0].nombre);
    
 
-    this.stateCtrl.setValue(this.setins.map(value => value.nombre)); //Inicializa el input de institución, no obstante esta parte
+    this.stateCtrl.setValue(this.setins[0].nombre); //Inicializa el input de institución, no obstante esta parte
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
-    this.stateCtrlgrado.setValue(this.setgra.map(value => value.grado));//Inicializa el input de grado, no obstante esta parte
+    this.stateCtrlgrado.setValue(this.setgra[0].grado);//Inicializa el input de grado, no obstante esta parte
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
     
     this.stateCtrl.clearValidators();
@@ -271,7 +274,7 @@ export class EstudianteDialogComponentComponent{
  
     //Realiza el filtrado del grado y la selección de un grado
     setTimeout(() => {
-
+      this.verificacion();
       this.filtrarinstitucion = this.stateCtrl.valueChanges.pipe(
         startWith(''),
         map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
@@ -326,7 +329,7 @@ export class EstudianteDialogComponentComponent{
   selectedgrado(event: MatAutocompleteSelectedEvent): void { 
     //Este evento se activa cuando el usuario selecciona un grado
     this.seleccionadostr=(event.option.viewValue);
-    //console.log("entre");
+   
     if(this.stateCtrl.value.length>0 && this.stateCtrlgrado.value.length>0 && this.stateCtrlmateria.value.length>0){
       this.btnact=true;
      }else{
@@ -343,9 +346,9 @@ export class EstudianteDialogComponentComponent{
     if(this.stateCtrl.value.length>0 && this.stateCtrlgrado.value.length>0 && this.stateCtrlmateria.value.length>0){
     
       this.btnact=true;
-      //console.log("click materia true");
+   
      }else{
-      //console.log("click materia false");
+     
       this.btnact=false;
      }
    
@@ -360,12 +363,16 @@ verificacion(){
   //console.log(this.stateCtrlmateria.value);
   this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"") );
   this.datosgrado.forEach(state=> (state.grado.trim().toLowerCase() === this.selectiongra.toString().trim().toLowerCase() ?(this.compclickgrado=true) : ""));
+  this.datosmateria.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectionmat.toString().trim().toLowerCase() ?(this.compclickmat=true) : ""));
   if(this.compclick){this.probarclick=true}else{this.probarclick=false};
   if(this.compclickgrado){this.probarclickgrado=true}else{this.probarclickgrado=false};
-  
+  if(this.compclickmat){this.probarclickmat=true}else{this.probarclickmat=false};
   this.compclick=false;
   this.compclickgrado=false;
-  if(this.selectionins.length>0 && this.selectiongra.length>0 && this.stateCtrlmateria.value.length>0 && this.datosmateria.length>0 && this.datosgrado.length>0 && this.datosinstitucion.length>0 && (this.probarclick && this.probarclickgrado)){
+  this.compclickmat=false;
+  if(this.selectionins.length>0 && this.selectiongra.length>0 && this.stateCtrlmateria.value.length>0 
+    && this.datosmateria.length>0 && this.datosgrado.length>0 && this.datosinstitucion.length>0 
+    && (this.probarclick && this.probarclickgrado &&this.probarclickmat)){
     this.btnact=true;
     this.probar=true;
     //console.log("click verificación true");
@@ -373,6 +380,7 @@ verificacion(){
     this.btnact=false;
     //console.log("click verificación false");
   }
+  this.inicio=true;
  }
 
   selectedMateria(event: MatAutocompleteSelectedEvent): void {
@@ -434,7 +442,6 @@ verificacion(){
       else{
         this.stateCtrlgrado.disable(); //Si no se obtiene nada de la base de datos se desabilita la opción de seleccionar un grado
         this.showAlertgra=true;
-        //console.log(this.datosgrado);
       }
 
       if(this.datosmateria.length>0){
@@ -467,9 +474,19 @@ verificacion(){
    //Cuando se presiona el botón ingresar
     /* Declaring variables and initializing them. */
     if(this.probar){
-    let filterValueArray:any[]=[];
+
+      //Antes
+    /*let filterValueArray:any[]=[];
     let filterGradoArray:any[]=[];
     let filterMateriaArray:any[]=[];
+    */
+    
+
+    let filterValueArray:string;
+    let filterGradoArray:string;
+    let filterMateriaArray:string;
+
+    
     let datosgrado:any[]=[];
     let filtervalue:any="";
     let filtervaluegrado:any="";
@@ -528,26 +545,41 @@ verificacion(){
        //Se obtiene la o las materias seleccionadas para el estudiante.
        datosmateria.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.materianombre.push({id:value.id,nombre:value.nombre})))));
      
-       filtervaluegrado = filterGradoArray;
-       if(typeof filtervaluegrado != 'string'){
-         filterValuegrado = filtervaluegrado[0].toLowerCase(); //Convierte el valor de grado a minusculas //Se convierte a minuscula para hacer una comparación igualitaria.
-         }else{
-           filterValuegrado = filtervaluegrado.toLowerCase(); //Convierte el valor de grado a minusculas
-         }
-       
-       
-           
-           //Realiza agregación del objeto que coincide con la busqueda del usuario.
-           datosgrado.push(this.datosgrado.filter(state => state.grado.toLowerCase().includes(filterValuegrado)));
-       
             
       
        
           //Se obtiene la o las materias seleccionadas para el estudiante.
-          datosgrado.slice().forEach(value=>(value.forEach((value: { id: string; grado:string;})=>(this.gradonombre.push({id:value.id,grado:value.grado})))));
-        //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
+          function comparar(valor:string,filtro:string):boolean{
+            if(valor==filtro){
+              return true;
+            }else{
+              return false;
+            }
+           }
+    
+    
+           filtervaluegrado = filterGradoArray;
+           if(typeof filtervaluegrado != 'string'){
+             filterValuegrado = filtervaluegrado[0].toLowerCase(); //Convierte el valor de grado a minusculas //Se convierte a minuscula para hacer una comparación igualitaria.
+             }else{
+               filterValuegrado = filtervaluegrado.toLowerCase(); //Convierte el valor de grado a minusculas
+             }
+           
+           
+               
+               //Realiza agregación del objeto que coincide con la busqueda del usuario.
+               datosgrado.push(this.datosgrado.filter(state => comparar(state.grado.trim().toLowerCase().toString(),filterValuegrado.
+               trim().toLowerCase().toString())));
+           
+                
+          
+           
+              //Se obtiene la o las materias seleccionadas para el estudiante.
+              datosgrado.slice().forEach(value=>(value.forEach((value: { id: string; grado:string;})=>(this.gradonombre.push({id:value.id,grado:value.grado})))));
+            //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
+                 //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
      
-     //console.log(datosgrado);
+    
     
    
     
@@ -568,7 +600,7 @@ verificacion(){
    
     if(this.data==null){ 
        //En el caos que sea un usuario nuevo se crea el objeto tareas de la siguiente forma
-       console.log(this.form.value.nombre);
+       
        this._adminService.getCustom("estudiante/querynombreandcedula",'nombre','cedula',this.form.value.nombre,this.form.value.cedula).subscribe({next: data => {
         this.verificar = data.body;
         
@@ -580,7 +612,7 @@ verificacion(){
       }
       );
       if(this.verificar){
-        console.log(this.verificar);
+       
         this._snackBar.open('Espere un momento por favor',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
@@ -590,7 +622,7 @@ verificacion(){
        }
       
       setTimeout(() => {
-       // console.log(this.verificar);
+      
       if(this.verificar){
        this.activate=true;
       this._snackBar.open('El estudiante ya se encuentra registrado',
@@ -609,7 +641,7 @@ verificacion(){
      
       if(!this.verificar){
         this.activate=false;
-        //console.log(this.verificar);
+   
        const tarea:any={
         nombre:nombre,
         cedula:cedula,
@@ -629,7 +661,7 @@ verificacion(){
         tarea.materia.push(this.materianombre[i]);//Se añaden al objeto tarea la materia seleccionada por el estudiante.
       }
 
-     //console.log(tarea);
+     
       //Se añade el objeto tarea a la petición post del servicio.
       const respuesta=this._adminService.create(tarea,"estudiante/addEstudiante/").subscribe({next: data => {
       this.datos = data;
@@ -645,7 +677,7 @@ verificacion(){
     //Se espera un tiempo hasta obtener la respuesta del servidor
     //Genera un toost tanto para si el docente fue creado como sino.
     setTimeout(() => {
-      //console.log(this.datos);
+      
       if(this.datos.message=="success"){
         this._snackBar.open('Estudiante agregado con exito',
         '', {horizontalPosition: 'center',
@@ -694,7 +726,7 @@ verificacion(){
       
         const respuesta=this._adminService.update(this.data.id,tarea,"estudiante/estudiantesUpdate/").subscribe({next: data => {
         this.datos = data;
-    //console.log(this.datos);
+    
         },
         error:error => {
         this.errors = error.message;
@@ -732,7 +764,7 @@ verificacion(){
       this.btnact=true;
      
     }else{
-     // console.log("entre")
+     
       this.btnact=false;
     }
     return this.datosinstitucion.filter(state => state.nombre.toLowerCase().includes(filterValue));

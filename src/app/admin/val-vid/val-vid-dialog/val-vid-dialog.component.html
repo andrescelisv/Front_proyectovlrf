@@ -37,7 +37,11 @@
           </mat-form-field>
           
           <app-control-messages  [control]="stateCtrl"></app-control-messages>
-          
+          <div *ngIf="probarclick == false && inicio">
+            <button class="btn" [swal]="['El valor de institución seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
           <mat-spinner *ngIf="loadingEst" diameter="30" class="spinner"></mat-spinner>
         <div *ngIf="spinnerEst">
 
@@ -68,7 +72,11 @@
           </mat-form-field>
 
               <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
-        
+              <div *ngIf="probarclickest == false && inicio">
+                <button class="btn" [swal]="['El valor de estudiante seleccionado presenta un error, selecione otro porfavor']">
+                  <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                  <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+              </div>
         </div>
             <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
             <div *ngIf="spinner">
@@ -89,6 +97,10 @@
                        
                         <span class="textoerrorinput">Tiene un elemento de tipo & no correcto</span>
                         <br>
+
+                        <button class="btn" [swal]="['La url del video contiene el caracter &, por lo cual debe removerlo del video, ya que no se aceptán como entrada']">
+                          <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                          <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
                     </div>
                     <ng-template #elseBlock></ng-template>
                     <div class="field-message" *ngIf="form.get('listaVideos')!.errors != null; else elseBlock">
@@ -97,6 +109,8 @@
                         <br>
                     </div>
                     <ng-template #elseBlock></ng-template>
+
+                    
 
                     <div (mouseover)="changeText=true" (mouseout)="changeText=false">
                       <span *ngIf="!changeText"></span>

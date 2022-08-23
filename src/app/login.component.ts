@@ -85,7 +85,7 @@ export class LoginComponent {
         this.onloginadmit.emit({loadingadmin:this.loading }); 
         this.show=false;
                
-        //this.router.navigate(['admin']);
+        //this.router.navigate(['homelist']);
         //this.loading=false;
       },1500)
       

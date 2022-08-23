@@ -11,7 +11,7 @@ import {Observable} from 'rxjs';
 import { Body, Grado, Materia, institucion, Docentes } from '../../interfaces/docentes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { videoLista } from './listaVideo';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+
 
 interface comprobacion {
   comprobar : boolean;
@@ -108,7 +108,7 @@ export class LvDialogComponent{
   docentenombre:any[]=[]; //Almacena el valor de grado, que es un vector que corresponde a la selección de los diferentes grados
   //por parte del usuario.
   dbaid="";  //id de materia
-  dbanombre:interfacedba[]=[]; //Nombre de materia
+  dbanombre:any[]=[]; //Nombre de materia
   estudianteid="";  //id de materia
   estudiantenombre:any[]=[]; //Nombre de materia
   btnact=false;   //boton de guardar no activo por defecto
@@ -121,6 +121,7 @@ export class LvDialogComponent{
   selectionest:any[]=[];
   selectiondoc:any[]=[];
   amper:boolean=false;
+  inicio:boolean=false;
   selectiondba:any[]=[];
   verificar:boolean=true;
   activate:boolean=false;
@@ -166,17 +167,6 @@ export class LvDialogComponent{
      /* The above code is calling the getAll method from the admin service. */
       const respuesta=this._adminService.getAll("institucion/all/").subscribe({next: data => {
         this.datosinstitucion = data.body;
-        console.log("datos institución: "+this.datosinstitucion.slice());
-        },
-        error:error => {
-        this.errors = error.message;
-          console.error('There was an error!', this.errors);
-        }
-      }
-      );
-
-      const respuestadba=this._adminService.getAll("DBA/all/").subscribe({next: data => {
-        this.datosdba = data.body;
         
         },
         error:error => {
@@ -185,6 +175,8 @@ export class LvDialogComponent{
         }
       }
       );
+
+      
    /* The above code is creating a form with the following fields:
    - nombre
    - cedula
@@ -209,7 +201,7 @@ export class LvDialogComponent{
     //Verifica si es un usuario nuevo a ingresar
     if(data==null){
       //this.select='Admin';
-    
+      this.verificacion();
       //Inicializa todos los inputs del html
       this.form.setValue({
         listaVideos:[]
@@ -217,6 +209,8 @@ export class LvDialogComponent{
        
 
       });
+
+      
       //si la respuesta del servidor para consultar la instituciones es diferentes de null
       if(respuesta !=null){
 
@@ -239,8 +233,8 @@ export class LvDialogComponent{
       this.spinnerEst=true;
       this.spinner=true;  //Muestra la información dentro del div que contiene el ngIf de spinner
       this.btnact=true;
-     console.log(this.data);
      
+     this.verificacion();
  
     
 //Crea un objeto con los valores obtenidos de la base de datos, relacionados 
@@ -269,7 +263,7 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
     
 
 
-    console.log(this.setins.map(value => value.nombre));
+   
     
     this.setdoc=data.lv[0].docente;  //Obtiene los datos de institución de la base de datos, apartir de la consulta realizada inicialmente
     this.setdba=data.lv;  //Obtiene los datos de grado de la base de datos, apartir de la consulta realizada inicialmente
@@ -278,13 +272,13 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
     this.setlistaVideos = data.lv[0].listaVideos;
 
 
-    this.stateCtrl.setValue(this.setins.map(value => value.nombre)); //Inicializa el input de institución, no obstante esta parte
+    this.stateCtrl.setValue(this.setins[0].nombre); //Inicializa el input de institución, no obstante esta parte
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
-    this.stateCtrldba.setValue(this.setdba.map(value => value.dba));//Inicializa el input de grado, no obstante esta parte
+    this.stateCtrldba.setValue(this.setdba[0].dba);//Inicializa el input de grado, no obstante esta parte
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
-    this.stateCtrldocentes.setValue(this.setdoc.map(value => value.nombre));
+    this.stateCtrldocentes.setValue(this.setdoc[0].nombre);
 
-    this.stateCtrlestudiantes.setValue(this.setest.map(value => value.nombre));
+    this.stateCtrlestudiantes.setValue(this.setest[0].nombre);
 
     this.selectionins.push(this.setins[0].nombre);
             
@@ -294,7 +288,7 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
     
 
     let institucion = this.setins.map(value => value.nombre).toString();
-    console.log(this.datosinstitucion);
+   
     
      //Coloca el vector con los valores obtenidos de la base de datos utilizando two data binding.
 
@@ -304,9 +298,20 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
       map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
     );
 
+    this._adminService.getAll("dba/all").subscribe({next: data => {
+      this.datosdba = data.body;
+  
+      },
+      error:error => {
+      this.errors = error.message;
+        console.error('There was an error!', this.errors);
+      }
+    }
+    );
+
     //Realiza la consulta de los grados asociados a la institución seleccionada anteriormente, o que se obtuvo de la base
     //de datos.
-    console.log(institucion);
+    
     this._adminService.getAll("Docente/queryname/"+this.setins[0].nombre+"/").subscribe({next: data => {
       this.datosdocente = data.body;
      
@@ -334,7 +339,7 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
 
     
     setTimeout(() => {
-
+      this.verificacion();
       if(this.datosdocente.length == 0 || this.datosestudiante.length==0){
         this.stateCtrldocentes.disable();
         this.stateCtrlestudiantes.disable();
@@ -344,18 +349,18 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
       }
     this.filtrardba = this.stateCtrldba.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrardba(state) : this.datosdba.slice(0,4))),
+      map(state => (state ? this._filtrardba(state) : this.datosdba)),
     );
  
     //Filtra las materias por un criterio de busqueda ingresado en el input. Este seleeciona varias materias.
     this.filtrardocentes = this.stateCtrldocentes.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice(0,4))),
+      map(state => (state ? this._filtrardocentes(state) : this.datosdocente)),
     );
 
     this.filtrarestudiantes = this.stateCtrlestudiantes.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice(0,4))),
+      map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante)),
     );
 
     },1000);
@@ -369,7 +374,7 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
   selecteddba(event: MatAutocompleteSelectedEvent): void { 
     //Este evento se activa cuando el usuario selecciona un grado
     this.seleccionadostr=(event.option.viewValue);
-    console.log(this.seleccionadostr);
+
 
     if(this.seleccionadostr.length>0){
       this.btnact=true;
@@ -391,7 +396,7 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
   }
 
   addControl() :void{
-    console.log(this.form.get('listaVideos'));
+  
     this.listaVideosFieldAsFormArray.push(this.listaVideo())
   }
 
@@ -401,13 +406,13 @@ this.form.setControl('listaVideos', this.fb.array(tagsArray || [])); //Con el ar
 
   formValue(): void{
    
-    console.log(this.form.value);
+    
   }
 
   selectedlv(event: MatAutocompleteSelectedEvent): void { 
     //Este evento se activa cuando el usuario selecciona un grado
     this.seleccionadostr=(event.option.viewValue);
-    console.log(this.seleccionadostr);
+  
 
     if(this.seleccionadostr.length>0){
       this.btnact=true;
@@ -433,7 +438,7 @@ verificacion(){
     this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"") );
     this.datosestudiante.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectionest.toString().trim().toLowerCase() ?(this.compclickest=true) : ( "")));
     this.datosdocente.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectiondoc.toString().trim().toLowerCase() ?(this.compclickdoc=true) : ( "")));
-    this.datosdba.forEach(state=> (state.identificador.trim().toLowerCase() === this.selectiondba.toString().trim().toLowerCase() ?(this.compclickdba=true) : ""));
+    this.datosdba.forEach((state:any)=> (state.trim().toLowerCase() === this.selectiondba.toString().trim().toLowerCase() ?(this.compclickdba=true) : ""));
     if(this.compclick){(this.probarclick=true)}else{this.probarclick=false};
     if(this.compclickest){this.probarclickest=true}else{this.probarclickest=false};
     if(this.compclickdoc){this.probarclickdoc=true}else{this.probarclickdoc=false};
@@ -442,7 +447,7 @@ verificacion(){
     this.compclickest=false;
     this.compclickdoc=false;
     this.compclickdba=false;
-   
+ 
    
     this.listaVideosFieldAsFormArray.value.forEach((e: any)=>e.listaVideos.indexOf('&')>0 ?this.amper=true : "")
     let ampersan:boolean;
@@ -456,13 +461,13 @@ verificacion(){
       ){
       this.btnact=true;
       this.probar=true;
-      //console.log("click verificación true");
+      
     }else{
       this.btnact=false;
-      //console.log("click verificación false");
+    
     }
  
-    
+    this.inicio= true;
    }
 
   selectedDocentes(event: MatAutocompleteSelectedEvent): void {
@@ -495,7 +500,7 @@ verificacion(){
 
 ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
   if (control.value && control.value.length != 10) {
-    console.log("entrando ");
+    
     return { 'phoneNumberInvalid': true };
   }
   return null;
@@ -509,10 +514,21 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
   
     this.loadingEst=true; //Carga y muestra el sppiner
     this.spinnerEst=false;
+
+    this._adminService.getAll("dba/all").subscribe({next: data => {
+      this.datosdba = data.body;
+      
+      },
+      error:error => {
+      this.errors = error.message;
+        console.error('There was an error!', this.errors);
+      }
+    }
+    );
     
     this._adminService.getAll("Docente/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosdocente = data.body;
-      console.log(this.datosdocente);
+      
       },
       error:error => {
       this.errors = error.message;
@@ -523,7 +539,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
     
     this._adminService.getAll("Estudiante/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosestudiante = data.body;
-      console.log(this.datosestudiante);
+      
       },
       error:error => {
       this.errors = error.message;
@@ -538,18 +554,18 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
       if(this.datosdba.length>0){
         this.showAlert=false;
         this.stateCtrldba.enable();
-         console.log(this.datosdba.forEach(value=>(console.log(value))));
+         
         this.filtrardba = this.stateCtrldba.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrardba(state) : this.datosdba.slice(0,4))),
+          map(state => (state ? this._filtrardba(state) : this.datosdba)),
         );
         this.filtrardocentes = this.stateCtrldocentes.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice(0,4))),
+          map(state => (state ? this._filtrardocentes(state) : this.datosdocente)),
         );
         this.filtrarestudiantes = this.stateCtrlestudiantes.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice(0,4))),
+          map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante)),
         );
 
         
@@ -559,7 +575,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
         this.showAlert=true;
       
       }
-      console.log(this.datosdocente);
+     
       if(this.datosdocente.length>0){
         this.showAlertMat=false;
         this.stateCtrldocentes.enable();
@@ -604,11 +620,25 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
    //Cuando se presiona el botón ingresar
     /* Declaring variables and initializing them. */
     if(this.probar){
+
+  ///Antes
+/*
     let filterValueArray:any[]=[];
     let filterDBAArray:any[]=[];
     let filterMateriaArray:any[]=[];
     let filterDocentesArray:any[]=[];
     let filterEstudiantesArray:any[]=[];
+      */
+
+
+    let filterValueArray:string;
+    let filterDBAArray:string;
+    let filterMateriaArray:string;
+    let filterDocentesArray:string;
+    let filterEstudiantesArray:string;
+
+
+
     let datosdba:any[]=[];
     let datoslistaVideo:any[]=[];
     let datosestudiante:any[]=[];
@@ -625,7 +655,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
 
     //Se obtiene los valores del form group y se tratan como constantes
     const videolista = this.form.value;
-    console.log(videolista);
+    
 
 
     
@@ -658,7 +688,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
     
     if(typeof filtervalue != 'string'){
     filterValue = filtervalue[0].toLowerCase(); //Se convierte a minuscula para hacer una comparación igualitaria.
-    console.log(filterValue);
+   
     }else{
       filterValue = filtervalue.toLowerCase(); 
     }
@@ -688,10 +718,10 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
       }
    
     
-     console.log(filterValuedba);
+     
       
       //Realiza agregación del objeto que coincide con la busqueda del usuario.
-      datosdba.push(this.datosdba.filter(state => state.identificador.toLowerCase().includes(filterValuedba)));
+      datosdba.push(this.datosdba.filter((state:any) => state.toLowerCase().includes(filterValuedba)));
 
       
     
@@ -705,7 +735,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
       filterValuedocente = filtervaluedocente.toLowerCase(); //Convierte el valor de grado a minusculas
     }
  
-   console.log(this.datosdocente);
+  
     
     //Realiza agregación del objeto que coincide con la busqueda del usuario.
     datosdocente.push(this.datosdocente.filter(state => state.nombre.toLowerCase().includes(filterValuedocente)));
@@ -726,21 +756,16 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
   
        
     //Se obtiene el grado que seleccionaron para el estudiante.
-    datosdba.slice().forEach(value=>(value.forEach((value: { id: string; identificador:string;})=>(this.dbanombre.push({
-      identificador: value.identificador,
-      id: '',
-      materia: '',
-      grado: '',
-      dba: ''
-    }),console.log(value.id)))));
+    datosdba.slice().forEach((value:any)=>this.dbanombre.push(value.toString()));
+    
    // this.datosgradotarea.slice().forEach(value=>(value.forEach((value: {   })=>(this.gradovalue.push(value.grado),console.log(value.grado)))));
-   datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+   datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre})))));
      //Se obtiene la o las materias seleccionadas para el estudiante.
-     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre})))));
    //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
   
    //Se obtiene la institución seleccionada para el estudiante
-   this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre,console.log(value.nombre)));
+   this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre));
     this.datosinstitucion.slice().forEach(value=>(this.institucionid=value.id));
 
    
@@ -769,7 +794,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
        }
       
       setTimeout(() => {
-       // console.log(this.verificar);
+  
       if(this.verificar){
        this.activate=true;
       this._snackBar.open('La lista de videos ya se encuentra registrada',
@@ -791,7 +816,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
       const tarea:any={
         lv:[{
           fecha: ConvertedDate,
-          dba:this.dbanombre[0].identificador,
+          dba:this.dbanombre[0].toString(),
           docente:[{id:this.docentenombre[0].id,nombre:this.docentenombre[0].nombre}],
           listaVideos:[]
         }
@@ -830,11 +855,11 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
         tarea.dba.videovisto.push(datosvideovisto[i]);//Se añaden al objeto tarea la materia seleccionada por el estudiante.
       }*/
 
-     console.log(tarea);
+   
       //Se añade el objeto tarea a la petición post del servicio.
       const respuesta=this._adminService.create(tarea,"LV/addLV/").subscribe({next: data => {
       this.datos = data;
-      console.log("create: "+this.datos);
+     
   
       },
       error:error => {
@@ -845,7 +870,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
     );
     //Se espera un tiempo hasta obtener la respuesta del servidor
     setTimeout(() => {
-      //console.log(this.datos);
+      
       if(this.datos.message=="success"){
         this._snackBar.open('Lista de videos creada con exito',
         '', {horizontalPosition: 'center',
@@ -872,14 +897,14 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
        //En el caso que se este editando un estudiante se realiza el mismo procedimiento que para un usuario nuevo con la diferencia
        // que la petición utilizada en el servicio es de tipo put.
 
-       console.log(this.docentenombre);
+      
        let fechaactual = new Date();
        const ConvertedDate = this.myDatepipe.transform(fechaactual, 'dd-MM-yyyy hh:mm a');
       const tarea:any={
         id:this.data.id,
         lv:[{
           fecha: ConvertedDate,
-          dba:this.dbanombre[0].identificador,
+          dba:this.dbanombre[0],
           docente:[{id:this.docentenombre[0].id,nombre:this.docentenombre[0].nombre}],
           listaVideos:[]
         }
@@ -909,10 +934,10 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
       for(let i=0;i<datoslistaVideo.length;i++){
         tarea.lv[0].listaVideos.push({video:datoslistaVideo[i]});
       }
-      console.log(tarea);
+    
         const respuesta=this._adminService.update(this.data.id,tarea,"LV/lvUpdate/").subscribe({next: data => {
         this.datos = data;
-    console.log(this.datos);
+    
         },
         error:error => {
         this.errors = error.message;
@@ -945,7 +970,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
   //de acuerdo a la necesidad del usuario.
 
   private _filtrarinstitucion(value: string): interfaceinstitucion[] {
-    console.log(value);
+    
     const filterValue = value.toLowerCase();
 
     return this.datosinstitucion.filter(state => state.nombre.toLowerCase().includes(filterValue));
@@ -955,31 +980,30 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
     
 
     const filterValue = value.toLowerCase();
-    console.log(filterValue);
     
-    console.log(this.datosdba.filter(state => state.grado.toLowerCase().includes(filterValue)));
+    
+    
     return this.datosdba.filter(state => state.identificador.toLowerCase().includes(filterValue));
   }
 
   private _filtrarmateria(value: string): interfacemateria[] {
     const filterValue = value.toLowerCase();
     
-    console.log(this.datosmateria.filter(state => state.nombre.toLowerCase().includes(filterValue)));
+    
     return this.datosmateria.filter(state => state.nombre.toLowerCase().includes(filterValue));
   }
 
   private _filtrarestudiantes(value: string): interfacemateria[] {
     const filterValue = value[0].toLowerCase();
     
-    console.log(this.datosestudiante.filter(state => state.nombre.toLowerCase().includes(filterValue)));
+
     return this.datosestudiante.filter(state => state.nombre.toLowerCase().includes(filterValue));
   }
 
   private _filtrardocentes(value: string): interfacemateria[] {
-    console.log(value);
+
     const filterValue = value[0].toLowerCase();
     
-    console.log(this.datosdocente.filter(state => state.nombre.toLowerCase().includes(filterValue)));
     return this.datosdocente.filter(state => state.nombre.toLowerCase().includes(filterValue));
   }
   

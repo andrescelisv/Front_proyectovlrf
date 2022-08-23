@@ -18,7 +18,6 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatCardModule} from '@angular/material/card';
-import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSortModule} from '@angular/material/sort';
@@ -26,16 +25,32 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatTableModule } from '@angular/material/table';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { NavegacionComponent } from './navegacion/navegacion.component';
+import { RouterModule } from '@angular/router';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatListModule } from '@angular/material/list'
 
-
-
+ 
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    NavegacionComponent
+  ],
   imports: [
     CommonModule,
     MatSliderModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule,
+    MatToolbarModule,
+    MatDividerModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
+    BrowserAnimationsModule,
+    MatIconModule
   ],
   exports:[
     CommonModule,
@@ -63,8 +78,15 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatDialogModule,
     MatDatepickerModule,
     MatAutocompleteModule,
-    MatSlideToggleModule
-
+    MatSlideToggleModule,
+    SweetAlert2Module,
+    NavegacionComponent,
+    MatToolbarModule,
+    MatDividerModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
+    BrowserAnimationsModule
   ]
 })
 export class SharedModule { }

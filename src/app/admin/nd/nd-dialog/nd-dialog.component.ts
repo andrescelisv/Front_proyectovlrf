@@ -120,6 +120,7 @@ export class NdDialogComponent{
   probarclickest:boolean=false;
   probarclickdoc:boolean=false;
   probarclickdba:boolean=false;
+  inicio=false;
   /* Creating a variable called datos and assigning it a value of an object with the properties ok,
   message, and body. */
   datos: responseproyect={
@@ -158,7 +159,7 @@ export class NdDialogComponent{
      /* The above code is calling the getAll method from the admin service. */
       const respuesta=this._adminService.getAll("institucion/all/").subscribe({next: data => {
         this.datosinstitucion = data.body;
-        console.log("datos institución: "+this.datosinstitucion.slice());
+       
         },
         error:error => {
         this.errors = error.message;
@@ -167,9 +168,9 @@ export class NdDialogComponent{
       }
       );
 
-      const respuestadba=this._adminService.getAll("DBA/all/").subscribe({next: data => {
+      this._adminService.getAll("dba/all").subscribe({next: data => {
         this.datosdba = data.body;
-        console.log("datos dba: "+this.datosdba.slice().forEach(value=>console.log(value)));
+       
         },
         error:error => {
         this.errors = error.message;
@@ -190,12 +191,11 @@ export class NdDialogComponent{
       ND: new FormControl('')
     })
    
-    console.log(data);
-    console.log(this.data);
+    
     //Verifica si es un usuario nuevo a ingresar
     if(data==null){
       //this.select='Admin';
-    
+      this.verificacion();
       //Inicializa todos los inputs del html
       
       //si la respuesta del servidor para consultar la instituciones es diferentes de null
@@ -218,7 +218,7 @@ export class NdDialogComponent{
       this.stateCtrlestudiantes.enable(); 
       this.spinner=true;  //Muestra la información dentro del div que contiene el ngIf de spinner
      
-     
+      this.verificacion();
      
  
     
@@ -235,7 +235,7 @@ export class NdDialogComponent{
 
 
 
-    console.log(this.setins.map(value => value.nombre));
+    
     
     this.setdoc=data.nd[0].docente;  //Obtiene los datos de institución de la base de datos, apartir de la consulta realizada inicialmente
     this.setdba=data.nd;  //Obtiene los datos de grado de la base de datos, apartir de la consulta realizada inicialmente
@@ -243,13 +243,13 @@ export class NdDialogComponent{
     this.setins= data.institucion;
 
 
-    this.stateCtrl.setValue(this.setins.map(value => value.nombre)); //Inicializa el input de institución, no obstante esta parte
+    this.stateCtrl.setValue(this.setins[0].nombre); //Inicializa el input de institución, no obstante esta parte
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
-    this.stateCtrldba.setValue(this.setdba.map(value => value.dba));//Inicializa el input de grado, no obstante esta parte
+    this.stateCtrldba.setValue(this.setdba[0].dba);//Inicializa el input de grado, no obstante esta parte
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
-    this.stateCtrldocentes.setValue(this.setdoc.map(value => value.nombre));
+    this.stateCtrldocentes.setValue(this.setdoc[0].nombre);
 
-    this.stateCtrlestudiantes.setValue(this.setest.map(value => value.nombre));
+    this.stateCtrlestudiantes.setValue(this.setest[0].nombre);
 
     let institucion = this.setins.map(value => value.nombre).toString();
     this.selectionins.push(this.setins[0].nombre);
@@ -295,20 +295,21 @@ export class NdDialogComponent{
 
     
     setTimeout(() => {
+      this.verificacion();
     this.filtrardba = this.stateCtrldba.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrardba(state) : this.datosdba.slice(0,4))),
+      map(state => (state ? this._filtrardba(state) : this.datosdba)),
     );
  
     //Filtra las materias por un criterio de busqueda ingresado en el input. Este seleeciona varias materias.
     this.filtrardocentes = this.stateCtrldocentes.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice(0,4))),
+      map(state => (state ? this._filtrardocentes(state) : this.datosdocente)),
     );
 
     this.filtrarestudiantes = this.stateCtrlestudiantes.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice(0,4))),
+      map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante)),
     );
 
     },1000);
@@ -328,7 +329,7 @@ export class NdDialogComponent{
       this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"") );
       this.datosestudiante.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectionest.toString().trim().toLowerCase() ?(this.compclickest=true) : ( "")));
       this.datosdocente.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectiondoc.toString().trim().toLowerCase() ?(this.compclickdoc=true) : ( "")));
-      this.datosdba.forEach(state=> (state.identificador.trim().toLowerCase() === this.selectiondba.toString().trim().toLowerCase() ?(this.compclickdba=true) : ""));
+      this.datosdba.forEach((state:any)=> (state.trim().toLowerCase() === this.selectiondba.toString().trim().toLowerCase() ?(this.compclickdba=true) : ""));
       if(this.compclick){(this.probarclick=true)}else{this.probarclick=false};
       if(this.compclickest){this.probarclickest=true}else{this.probarclickest=false};
       if(this.compclickdoc){this.probarclickdoc=true}else{this.probarclickdoc=false};
@@ -337,8 +338,10 @@ export class NdDialogComponent{
       this.compclickest=false;
       this.compclickdoc=false;
       this.compclickdba=false;
+
    
-      if(this.selectionins.length>0 && this.selectionest.length>0 && this.selectiondoc.length>0 && this.selectiondba.length>0 && this.datosinstitucion.length>0 && this.datosestudiante.length>0 && this.datosdocente.length>0 && 
+      if(this.selectionins.length>0 && this.selectionest.length>0 && this.selectiondoc.length>0 && this.selectiondba.length>0
+         && this.datosinstitucion.length>0 && this.datosestudiante.length>0 && this.datosdocente.length>0 && 
         this.datosdba.length>0 &&
         (this.probarclick && this.probarclickest && this.probarclickdoc && this.probarclickdba)
         
@@ -349,21 +352,22 @@ export class NdDialogComponent{
         //console.log("click verificación true");
       }else{
         this.btnact=false;
-        //console.log("click verificación false");
+      
       }
+      this.inicio=true;
      }
 
   selecteddba(event: MatAutocompleteSelectedEvent): void { 
     //Este evento se activa cuando el usuario selecciona un grado
     this.seleccionadostr=(event.option.viewValue);
-    console.log(this.seleccionadostr);
+    
     this.btnact=true;
     if(this.seleccionadostr.length>0){
       this.btnact=true;
      }else{
       this.btnact=false;
      }
-     console.log("valuend: "+this.slider);
+    
 
   }
 
@@ -417,7 +421,7 @@ export class NdDialogComponent{
     
     this._adminService.getAll("Docente/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosdocente = data.body;
-      console.log(this.datosdocente);
+     
       },
       error:error => {
       this.errors = error.message;
@@ -428,7 +432,7 @@ export class NdDialogComponent{
     //Obtiene las materias asociadas a una institución
     this._adminService.getAll("Estudiante/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosestudiante = data.body;
-      console.log(this.datosestudiante);
+      
       },
       error:error => {
       this.errors = error.message;
@@ -443,18 +447,18 @@ export class NdDialogComponent{
       if(this.datosdba.length>0){
         this.showAlert=false;
         this.stateCtrldba.enable();
-         console.log(this.datosdba.forEach(value=>(console.log(value))));
+      
         this.filtrardba = this.stateCtrldba.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrardba(state) : this.datosdba.slice(0,4))),
+          map(state => (state ? this._filtrardba(state) : this.datosdba.slice())),
         );
         this.filtrardocentes = this.stateCtrldocentes.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice(0,4))),
+          map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice())),
         );
         this.filtrarestudiantes = this.stateCtrlestudiantes.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice(0,4))),
+          map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice())),
         );
 
         
@@ -498,7 +502,7 @@ export class NdDialogComponent{
     },3000)
     
     
-    console.log("valuend: "+this.slider);
+    
     
     
   }
@@ -517,7 +521,7 @@ export class NdDialogComponent{
     if(this.data!=null){
         this.btnact=true; 
     }
-    console.log(this.slider);
+    
       
   }
   
@@ -526,11 +530,27 @@ export class NdDialogComponent{
    //Cuando se presiona el botón ingresar
     /* Declaring variables and initializing them. */
     if(this.probar){
+
+      //Antes
+      /*
     let filterValueArray:any[]=[];
     let filterDBAArray:any[]=[];
     let filterMateriaArray:any[]=[];
     let filterDocentesArray:any[]=[];
     let filterEstudiantesArray:any[]=[];
+     */
+
+
+    let filterValueArray:string;
+    let filterDBAArray:string;
+    let filterMateriaArray:string;
+    let filterDocentesArray:string;
+    let filterEstudiantesArray:string;
+
+
+
+
+
     let datosdba:any[]=[];
     let datosestudiante:any[]=[];
     let datosdocente:any[]=[];
@@ -543,6 +563,9 @@ export class NdDialogComponent{
     this.docentenombre=[];
     this.estudiantenombre=[];
     this.dbanombre=[];
+    let filterValue: string;
+    let filterValuedba: string;
+
 
     //Se obtiene los valores del form group y se tratan como constantes
     const videovistostr = this.form.value.videovisto;
@@ -559,8 +582,7 @@ export class NdDialogComponent{
     filterDocentesArray = this.stateCtrldocentes.value;  //Valor docentes
     filterEstudiantesArray = this.stateCtrlestudiantes.value;   // Valor estudiantes
     
-    console.log(this.slider);
-    console.log(this.valuend);
+   
     
       
     /*for(let i=0;i<filterGradoArray.length;i++){
@@ -570,14 +592,18 @@ export class NdDialogComponent{
     for(let i=0;i<filterMateriaArray.length;i++){
       filtervaluemateria=filterMateriaArray[i];
     }*/
-    
     filtervalue= filterValueArray; 
-    console.log(filtervalue);
-    
-    const filterValue = filtervalue[0].toLowerCase(); //Se convierte a minuscula para hacer una comparación igualitaria.
-    
-    //Se extrae el objeto que corresponde con el valor ingresado por el usuario.
-    this.datosinstitucion=this.datosinstitucion.filter(state => state.nombre.toLowerCase().includes(filterValue));
+    if(typeof filtervalue != 'string'){
+      filterValue = filtervalue[0].toLowerCase(); //Se convierte a minuscula para hacer una comparación igualitaria.
+     // console.log(filterValue);
+      }else{
+        filterValue = filtervalue.toLowerCase(); 
+      }
+
+     
+      //Se extrae el objeto que corresponde con el valor ingresado por el usuario.
+      this.datosinstitucion=this.datosinstitucion.filter(state => state.nombre.toLowerCase().includes(filterValue));
+      
     
    
     /*const filterValueMat = this.seleccionadoMat;
@@ -586,11 +612,17 @@ export class NdDialogComponent{
    
   
     filtervaluedba = filterDBAArray;
-    const filterValuedba = filtervaluedba[0].toLowerCase(); //Convierte el valor de grado a minusculas
+    if(typeof filtervaluedba != 'string'){
+      filterValuedba = filtervaluedba[0].toLowerCase(); //Se convierte a minuscula para hacer una comparación igualitaria.
+     
+      }else{
+        filterValuedba = filtervaluedba.toLowerCase(); 
+      }
+   //Convierte el valor de grado a minusculas
    
       
       //Realiza agregación del objeto que coincide con la busqueda del usuario.
-      datosdba.push(this.datosdba.filter(state => state.identificador.toLowerCase().includes(filterValuedba)));
+      datosdba.push(this.datosdba.filter((state:any) => state.toLowerCase().includes(filterValuedba)));
 
       
     
@@ -616,23 +648,17 @@ export class NdDialogComponent{
   
        
     //Se obtiene el grado que seleccionaron para el estudiante.
-    datosdba.slice().forEach(value=>(value.forEach((value: { id: string; identificador:string;})=>(this.dbanombre.push({
-      identificador: value.identificador,
-      id: '',
-      materia: '',
-      grado: '',
-      dba: ''
-    }),console.log(value.id)))));
+    datosdba.slice().forEach((value:any)=>this.dbanombre.push(value.toString()));
    // this.datosgradotarea.slice().forEach(value=>(value.forEach((value: {   })=>(this.gradovalue.push(value.grado),console.log(value.grado)))));
-   datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+   datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre})))));
      //Se obtiene la o las materias seleccionadas para el estudiante.
-     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre})))));
    //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
    datosvideovisto.push({
      videovisto: videovistostr, fecha: ConvertedDate
    });
    //Se obtiene la institución seleccionada para el estudiante
-   this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre,console.log(value.nombre)));
+   this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre));
     this.datosinstitucion.slice().forEach(value=>(this.institucionid=value.id));
 
    
@@ -664,12 +690,12 @@ export class NdDialogComponent{
        // console.log(this.verificar);
       if(this.verificar){
        this.activate=true;
-      this._snackBar.open('La ruta de aprendizaje ya se encuentra registrada',
+      this._snackBar.open('El nivel de desempeño para este estudiante ya se encuentra registrado',
       '', {horizontalPosition: 'center',
        verticalPosition: 'bottom',
        duration: 8000});
 
-       this._snackBar.open('La ruta de aprendizaje ya se encuentra registrada',
+       this._snackBar.open('El nivel de desempeño para este estudiante ya se encuentra registrado',
       '', {horizontalPosition: 'center',
        verticalPosition: 'top',
        duration: 8000});
@@ -683,7 +709,7 @@ export class NdDialogComponent{
       const tarea:any={
         nd:[{
           fecha: ConvertedDate,
-          dba:this.dbanombre[0].identificador,
+          dba:this.dbanombre[0],
           docente:[{id:this.docentenombre[0].id,nombre:this.docentenombre[0].nombre}],
           nd: this.slider
         }
@@ -716,11 +742,11 @@ export class NdDialogComponent{
         tarea.dba.videovisto.push(datosvideovisto[i]);//Se añaden al objeto tarea la materia seleccionada por el estudiante.
       }*/
 
-     console.log(tarea);
+     //console.log(tarea);
       //Se añade el objeto tarea a la petición post del servicio.
       const respuesta=this._adminService.create(tarea,"ND/addND/").subscribe({next: data => {
       this.datos = data;
-      console.log("create: "+this.datos);
+     
   
       },
       error:error => {
@@ -733,7 +759,7 @@ export class NdDialogComponent{
     setTimeout(() => {
       //console.log(this.datos);
       if(this.datos.message=="success"){
-        this._snackBar.open('Ruta de aprendizaje creada con exito',
+        this._snackBar.open('Nivel de desempeño creado con exito',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
          duration: 5000});
@@ -763,7 +789,7 @@ export class NdDialogComponent{
         id:this.data.id,
         nd:[{
           fecha: ConvertedDate,
-          dba:this.dbanombre[0].identificador,
+          dba:this.dbanombre[0],
           docente:[{id:this.docentenombre[0].id,nombre:this.docentenombre[0].nombre}],
           nd: this.slider
         }
@@ -776,7 +802,7 @@ export class NdDialogComponent{
       }
         const respuesta=this._adminService.update(this.data.id,tarea,"nd/ndUpdate/").subscribe({next: data => {
         this.datos = data;
-    console.log(this.datos);
+   
         },
         error:error => {
         this.errors = error.message;
@@ -786,7 +812,7 @@ export class NdDialogComponent{
       );
   
     if(this.datos.ok==true){
-      this._snackBar.open('Usuario actualizado con exito',
+      this._snackBar.open('Nivel de desempeño actualizado actualizado con exito',
       '', {horizontalPosition: 'center',
        verticalPosition: 'bottom',
        duration: 5000});
@@ -817,28 +843,20 @@ export class NdDialogComponent{
   private _filtrardba(value: string): interfacedba[] {
     const filterValue = value.toLowerCase();
     
-    console.log(this.datosdba.filter(state => state.identificador.toLowerCase().includes(filterValue)));
-    return this.datosdba.filter(state => state.identificador.toLowerCase().includes(filterValue));
+    return this.datosdba.filter((state:any) => state.toLowerCase().includes(filterValue));
   }
 
-  private _filtrarmateria(value: string): interfacemateria[] {
-    const filterValue = value.toLowerCase();
-    
-    console.log(this.datosmateria.filter(state => state.nombre.toLowerCase().includes(filterValue)));
-    return this.datosmateria.filter(state => state.nombre.toLowerCase().includes(filterValue));
-  }
+
 
   private _filtrarestudiantes(value: string): interfacemateria[] {
     const filterValue = value.toLowerCase();
     
-    console.log(this.datosestudiante.filter(state => state.nombre.toLowerCase().includes(filterValue)));
     return this.datosestudiante.filter(state => state.nombre.toLowerCase().includes(filterValue));
   }
 
   private _filtrardocentes(value: string): interfacemateria[] {
     const filterValue = value.toLowerCase();
     
-    console.log(this.datosdocente.filter(state => state.nombre.toLowerCase().includes(filterValue)));
     return this.datosdocente.filter(state => state.nombre.toLowerCase().includes(filterValue));
   }
   

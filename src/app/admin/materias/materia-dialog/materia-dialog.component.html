@@ -49,6 +49,11 @@
           </mat-form-field>
         
           <app-control-messages  [control]="stateCtrl"></app-control-messages>
+          <div *ngIf="probarclick == false && inicio">
+            <button class="btn" [swal]="['El valor de institución seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
 
           <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
         <div *ngIf="spinner">
@@ -76,12 +81,19 @@
           </mat-form-field>
      
           <app-control-messages  [control]="stateCtrlgrado"></app-control-messages>
+          <div *ngIf="probarclickgrado == false && inicio">
+            <button class="btn" [swal]="['El valor de grado seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
+
+
           
          </div>
 
          <div *ngIf="activate">
 
-          <span class="textoerrorinput">El grado ya se encuentra registrado</span>
+          <span class="textoerrorinput">La materia ya se encuentra registrada</span>
           <br>
         </div> 
 

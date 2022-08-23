@@ -30,6 +30,7 @@ export interface interfacegrado {
 export class MateriaDialogComponent {
 
   btnact=false;
+  inicio=false;
   seleccionado:string="";
   errors:string="";
   gradonombre="";
@@ -84,12 +85,12 @@ export class MateriaDialogComponent {
     
       this.form = new FormGroup({
         area: new FormControl('',[Validators.required]),
-        nombre: new FormControl('',[Validators.required,Validators.pattern(/^[a-z\s\u00E0-\u00FC\u00f1]*$/i)])
+        nombre: new FormControl('',[Validators.pattern(/^[a-z\s\u00E0-\u00FC\u00f1]*$/i),Validators.required,Validators.pattern('[A-Za-z \-\_]+')])
       });
     
         if(data==null){
           this.selectArea='';
-        
+          this.verificacion();
           this.form.setValue({
             area:"",
             nombre:""
@@ -115,7 +116,7 @@ export class MateriaDialogComponent {
         
         }else{
          
-         
+          this.verificacion();
           this.btnact=true;
           this.spinner=true;
          
@@ -155,7 +156,7 @@ export class MateriaDialogComponent {
 
 
         setTimeout(() => {
-
+         this.verificacion();
        
 
         this.filtrarinstitucion = this.stateCtrl.valueChanges.pipe(
@@ -271,6 +272,7 @@ verificacion(){
     this.probar=false;
     //console.log("click verificación false");
   }
+  this.inicio=true;
  }
 
 
@@ -280,7 +282,7 @@ verificacion(){
     const nombre = this.form.value.nombre;  
     const area = this.form.value.area;
     
-    //console.log("area: "+area);
+
     const filterValuegrado = this.stateCtrlgrado.value;
     this.datosgrado=this.datosgrado.filter(state => state.grado.includes(filterValuegrado));
    
@@ -291,11 +293,11 @@ verificacion(){
 
     this.datosgrado.slice().forEach(value=>(this.gradoid=value.id));
     this.datosgrado.slice().forEach(value=>(this.gradovalue=value.grado));
-  //  console.log(this.gradovalue);
+
 
     this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre,console.log(value.id)));
     this.datosinstitucion.slice().forEach(value=>(this.institucionid=value.id));
-    //console.log(this.institucionnombre);
+  
    
    
 
@@ -313,7 +315,7 @@ verificacion(){
       }
       );
       if(this.verificar){
-        console.log(this.verificar);
+       
         this._snackBar.open('Espere un momento por favor',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
@@ -349,11 +351,11 @@ verificacion(){
         institucion:[{nombre: this.institucionnombre, id:this.institucionid}]
       }
 
-      console.table(tarea);
+      
       
       const respuesta=this._adminService.create(tarea,"Materia/addMateria/").subscribe({next: data => {
         this.datos = data;
-        console.log("create: "+this.datos);
+       
     
         },
         error:error => {
@@ -363,9 +365,9 @@ verificacion(){
       }
       );
       setTimeout(() => {
-        //console.log(this.datos);
+       
         if(this.datos.message=="success"){
-          this._snackBar.open('Materia actualizada con exito',
+          this._snackBar.open('Materia agregada con exito',
           '', {horizontalPosition: 'center',
            verticalPosition: 'bottom',
            duration: 5000});
@@ -396,10 +398,10 @@ verificacion(){
         institucion:[{nombre: this.institucionnombre, id:this.institucionid}]
       
     }
-    console.log(tarea);
+   
       const respuesta=this._adminService.update(this.data.id,tarea,"Materia/materiaUpdate/").subscribe({next: data => {
       this.datos = data;
-  console.log(this.datos);
+  
       },
       error:error => {
       this.errors = error.message;
@@ -409,7 +411,7 @@ verificacion(){
     );
 
     setTimeout(() => {
-      console.log(this.datos);
+     
       if(this.datos.message=="success"){
         this._snackBar.open('Materia actualizada con exito',
         '', {horizontalPosition: 'center',

@@ -119,6 +119,7 @@ export class RhuDialogComponent{
   probarclickest:boolean=false;
   probarclickdoc:boolean=false;
   probarclickdba:boolean=false;
+  amper:boolean=false;
  
   /* Creating a variable called datos and assigning it a value of an object with the properties ok,
   message, and body. */
@@ -140,7 +141,7 @@ export class RhuDialogComponent{
   datosdocente:interfacedocente[]=[];
   datosmateria:interfacemateria[]=[];
   datosestudiante:interfaceestudiante[]=[];
- 
+ inicio=false;
   
  /* The above code is creating a new event emitter called addUser. */
   errors:any;
@@ -163,9 +164,9 @@ export class RhuDialogComponent{
       }
       );
 
-      const respuestadba=this._adminService.getAll("DBA/all/").subscribe({next: data => {
+      this._adminService.getAll("dba/all").subscribe({next: data => {
         this.datosdba = data.body;
-        //console.log("datos dba: "+this.datosdba.slice().forEach(value=>console.log(value)));
+       
         },
         error:error => {
         this.errors = error.message;
@@ -207,7 +208,7 @@ export class RhuDialogComponent{
           startWith(''),
           map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
         );
-      
+        this.verificacion();
       
       
      
@@ -219,7 +220,7 @@ export class RhuDialogComponent{
       this.stateCtrlestudiantes.enable(); 
       this.spinner=true;  //Muestra la información dentro del div que contiene el ngIf de spinner
      
-     
+      this.verificacion();
      
  
     
@@ -244,13 +245,13 @@ export class RhuDialogComponent{
     this.setins= data.institucion;
 
 
-    this.stateCtrl.setValue(this.setins.map(value => value.nombre)); //Inicializa el input de institución, no obstante esta parte
+    this.stateCtrl.setValue(this.setins[0].nombre); //Inicializa el input de institución, no obstante esta parte
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
-    this.stateCtrldba.setValue(this.setdba.map(value => value.dba));//Inicializa el input de grado, no obstante esta parte
+    this.stateCtrldba.setValue(this.setdba[0].dba);//Inicializa el input de grado, no obstante esta parte
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
-    this.stateCtrldocentes.setValue(this.setdoc.map(value => value.nombre));
+    this.stateCtrldocentes.setValue(this.setdoc[0].nombre);
 
-    this.stateCtrlestudiantes.setValue(this.setest.map(value => value.nombre));
+    this.stateCtrlestudiantes.setValue(this.setest[0].nombre);
 
     let institucion = this.setins.map(value => value.nombre).toString();
    
@@ -299,20 +300,21 @@ export class RhuDialogComponent{
 
     
     setTimeout(() => {
+      this.verificacion();
     this.filtrardba = this.stateCtrldba.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrardba(state) : this.datosdba.slice(0,4))),
+      map(state => (state ? this._filtrardba(state) : this.datosdba.slice())),
     );
  
     //Filtra las materias por un criterio de busqueda ingresado en el input. Este seleeciona varias materias.
     this.filtrardocentes = this.stateCtrldocentes.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice(0,4))),
+      map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice())),
     );
 
     this.filtrarestudiantes = this.stateCtrlestudiantes.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice(0,4))),
+      map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice())),
     );
 
     },1000);
@@ -420,15 +422,15 @@ export class RhuDialogComponent{
         // console.log(this.datosdba.forEach(value=>(console.log(value))));
         this.filtrardba = this.stateCtrldba.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrardba(state) : this.datosdba.slice(0,4))),
+          map(state => (state ? this._filtrardba(state) : this.datosdba.slice())),
         );
         this.filtrardocentes = this.stateCtrldocentes.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice(0,4))),
+          map(state => (state ? this._filtrardocentes(state) : this.datosdocente.slice())),
         );
         this.filtrarestudiantes = this.stateCtrlestudiantes.valueChanges.pipe(
           startWith(''),
-          map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice(0,4))),
+          map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice())),
         );
 
         
@@ -483,7 +485,7 @@ export class RhuDialogComponent{
     this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"") );
     this.datosestudiante.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectionest.toString().trim().toLowerCase() ?(this.compclickest=true) : ( "")));
     this.datosdocente.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectiondoc.toString().trim().toLowerCase() ?(this.compclickdoc=true) : ( "")));
-    this.datosdba.forEach(state=> (state.identificador.trim().toLowerCase() === this.selectiondba.toString().trim().toLowerCase() ?(this.compclickdba=true) : ""));
+    this.datosdba.forEach((state:any)=> (state.trim().toLowerCase() === this.selectiondba.toString().trim().toLowerCase() ?(this.compclickdba=true) : ""));
     if(this.compclick){(this.probarclick=true)}else{this.probarclick=false};
     if(this.compclickest){this.probarclickest=true}else{this.probarclickest=false};
     if(this.compclickdoc){this.probarclickdoc=true}else{this.probarclickdoc=false};
@@ -492,6 +494,10 @@ export class RhuDialogComponent{
     this.compclickest=false;
     this.compclickdoc=false;
     this.compclickdba=false;
+    this.form.value.videovisto.indexOf('&')>0 ?this.amper=true : "";
+    let ampersan:boolean;
+    if(this.amper==true){ampersan=true}else{ampersan=false}
+    this.amper=false;
  
     if(this.selectionins.length>0 && this.selectionest.length>0 && this.selectiondoc.length>0 && this.selectiondba.length>0 && this.datosinstitucion.length>0 && this.datosestudiante.length>0 && this.datosdocente.length>0 && 
       this.datosdba.length>0 &&
@@ -506,17 +512,30 @@ export class RhuDialogComponent{
       this.btnact=false;
       //console.log("click verificación false");
     }
+    this.inicio=true;
    }
 
   Ingresar(){
    //Cuando se presiona el botón ingresar
     /* Declaring variables and initializing them. */
     if(this.probar){
+   //Antes
+      /*
     let filterValueArray:any[]=[];
     let filterDBAArray:any[]=[];
     let filterMateriaArray:any[]=[];
     let filterDocentesArray:any[]=[];
     let filterEstudiantesArray:any[]=[];
+    */
+
+    let filterValueArray:string;
+    let filterDBAArray:string;
+    let filterMateriaArray:string;
+    let filterDocentesArray:string;
+    let filterEstudiantesArray:string;
+
+
+
     let datosdba:any[]=[];
     let datosestudiante:any[]=[];
     let datosdocente:any[]=[];
@@ -581,7 +600,7 @@ export class RhuDialogComponent{
       }
       
       //Realiza agregación del objeto que coincide con la busqueda del usuario.
-      datosdba.push(this.datosdba.filter(state => state.identificador.toLowerCase().includes(filterValuedba)));
+      datosdba.push(this.datosdba.filter((state:any) => state.toLowerCase().includes(filterValuedba)));
 
       
     
@@ -611,13 +630,7 @@ export class RhuDialogComponent{
   
       
     //Se obtiene el grado que seleccionaron para el estudiante.
-    datosdba.slice().forEach(value=>(value.forEach((value: { id: string; identificador:string;})=>(this.dbanombre.push({
-      identificador: value.identificador,
-      id: '',
-      materia: '',
-      grado: '',
-      dba: ''
-    })))));
+    datosdba.slice().forEach((value:any)=>this.dbanombre.push(value.toString()));
     
    // this.datosgradotarea.slice().forEach(value=>(value.forEach((value: {   })=>(this.gradovalue.push(value.grado),//console.log(value.grado)))));
    datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre})))));
@@ -679,7 +692,7 @@ export class RhuDialogComponent{
       const tarea:any={
         dba:[{
           fecha: ConvertedDate,
-          dba:this.dbanombre[0].identificador,
+          dba:this.dbanombre[0],
           docente:[{id:this.docentenombre[0].id,nombre:this.docentenombre[0].nombre}],
           videovisto:[{videovisto:datosvideovisto[0].videovisto, fecha: datosvideovisto[0].fecha}]
         }
@@ -758,7 +771,7 @@ export class RhuDialogComponent{
         id:this.data.id,
         dba:[{
           fecha: ConvertedDate,
-          dba:this.dbanombre[0].identificador,
+          dba:this.dbanombre[0],
           docente:[{id:this.docentenombre[0].id,nombre:this.docentenombre[0].nombre}],
           videovisto:[{videovisto:datosvideovisto[0].videovisto, fecha: datosvideovisto[0].fecha}]
         }
@@ -784,11 +797,11 @@ export class RhuDialogComponent{
       for(let i=0;i<1;i++){
         tarea.estudiante.push(this.estudiantenombre[i]);//Se añaden al objeto tarea la materia seleccionada por el estudiante.
       }
-      console.log(tarea);
+      //console.log(tarea);
       //console.log(tarea);
         const respuesta=this._adminService.update(this.data.id,tarea,"RHU/rhuUpdate/").subscribe({next: data => {
         this.datos = data;
-    console.log(this.datos);
+    //console.log(this.datos);
         },
         error:error => {
         this.errors = error.message;
@@ -830,7 +843,7 @@ export class RhuDialogComponent{
     const filterValue = value.toLowerCase();
     
     //console.log(this.datosdba.filter(state => state.grado.toLowerCase().includes(filterValue)));
-    return this.datosdba.filter(state => state.identificador.toLowerCase().includes(filterValue));
+    return this.datosdba.filter((state:any) => state.toLowerCase().includes(filterValue));
   }
 
   private _filtrarmateria(value: string): interfacemateria[] {

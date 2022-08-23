@@ -94,6 +94,7 @@ export class DocenteDialogComponent {
   materianombre:any[]=[];  //Almacena el valor del nombre de la materia
   btnact=false;  //Activa el botón guardar una vez se cumple una condición, por defecto está en falso.
   allow=false;
+  inicio=false;
   institucionnombre:string="";  //Almacena el nombre de una institución
   institucionid:string=""; //Almacena el id de una institución
   showAlert:boolean=false;  //Muestra un mensaje toots con un mensaje de alerta.
@@ -154,7 +155,7 @@ export class DocenteDialogComponent {
     })
    
     
-    console.log(this.data);
+    
 
     //Si los datos son para agregar se utiliza está opción
     if(data==null){
@@ -173,6 +174,7 @@ export class DocenteDialogComponent {
          //Si la respuesta a la consulta de la instituciones resulta positiva, entonces se aplica un filtro que obtiene asincronicamente
          //de los valores ingresados por teclado en institución, de lo contrario el operador ternario hace su trabajo y obtiene de filtro
          //original.
+         this.verificacion();
         this.filtrarinstitucion = this.stateCtrl.valueChanges.pipe(
           startWith(''),
           map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
@@ -199,7 +201,7 @@ export class DocenteDialogComponent {
       this.stateCtrlmateria.enable(); //Habilita el poder seleccionar la materia
       this.btnact=true; //Activa el botón guardar
       this.spinner=true; // Habilita el cargador del spinner
-      
+      this.verificacion();
       var re = /-/gi;  //Indica que busque el separador "-"
   
     // Use of String replace() Method
@@ -226,11 +228,11 @@ export class DocenteDialogComponent {
     this.setgra=data.grado;   //Almacena el valor creado anteriormente de grado
     this.setmat=data.materia; //Almacena el valor creado anteriormente de materia
 
-    this.stateCtrl.setValue(this.setins.map(value => value.nombre)); // Ingresa el o los valores creados para institución
+    this.stateCtrl.setValue(this.setins[0].nombre); // Ingresa el o los valores creados para institución
 
-    this.setgra.forEach(value=>console.log("value: "+value));  //Ingresa el o los valores creados para grado.
+   // this.setgra.forEach(value=>console.log("value: "+value));  //Ingresa el o los valores creados para grado.
     
-    this.setgra.map(value=>console.log(value));  
+    //this.setgra.map(value=>console.log(value));  
     //const valor=['3','11']
     const valor=this.setgra.slice().map(value=>(value.grado)); 
     this.selectiongra= valor;  
@@ -264,7 +266,7 @@ export class DocenteDialogComponent {
    //Obtiene del back los grado asociados a la institución consultada.
     this._adminService.getAll("Grado/queryname/"+this.setins.map(value => value.nombre)+"/").subscribe({next: data => {
       this.datosgrado = data.body;
-      console.log(this.datosgrado);
+      
       
       },
       error:error => {
@@ -285,7 +287,7 @@ export class DocenteDialogComponent {
     }
     );
     setTimeout(() => {
-
+       this.verificacion();
       this.filtrarinstitucion = this.stateCtrl.valueChanges.pipe(
         startWith(''),
         map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
@@ -405,7 +407,7 @@ export class DocenteDialogComponent {
     //grados asociados a la institución.
     this._adminService.getAll("Grado/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosgrado=data.body;
-      console.table(data.body);
+     // console.table(data.body);
       },
       error:error => {
       this.errors = error.message;
@@ -450,7 +452,7 @@ export class DocenteDialogComponent {
 
       if(this.datosmateria.length>0){
         //Si la cantidad de datos de materia que llegan son mayores que 0 entones se habilita el campo para ingresar las materias.
-        console.table("datos materia: "+this.datosmateria.forEach(value=>console.log(value)));
+       // console.table("datos materia: "+this.datosmateria.forEach(value=>console.log(value)));
         this.showAlertMat=false; // Se quita la alerta
         this.stateCtrlmateria.enable(); // Se habilita el input de materia.
         
@@ -471,6 +473,8 @@ export class DocenteDialogComponent {
     //console.log(this.selectionins);
     //console.log(this.selectiongra);
     //console.log(this.stateCtrlmateria.value);
+
+    
     this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"") );
     this.datosgrado.forEach(state=> (state.grado.trim().toLowerCase() === this.selectiongra.toString().trim().toLowerCase() ?(this.compclickgrado=true) : ""));
     if(this.compclick){this.probarclick=true}else{this.probarclick=false};
@@ -480,21 +484,35 @@ export class DocenteDialogComponent {
     this.compclickgrado=false;
     if(this.selectionins.length>0 && this.selectiongra.length>0 && this.stateCtrlmateria.value.length>0 && this.datosmateria.length>0 && this.datosgrado.length>0 && this.datosinstitucion.length>0 && this.probarclick){
       this.btnact=true;
+      this.probar=true;
       //console.log("click verificación true");
     }else{
       this.btnact=false;
       //console.log("click verificación false");
     }
+    this.inicio=true;
    }
 
    
   
 
    Ingresar(){
-   
+   /*
+  
+    LLevaban esto antes
     let filterValueArray:any[]=[];  // Se inicializa un arreglo vacio
     let filterGradoArray:any[]=[];// Se inicializa un arreglo vacio
     let filterMateriaArray:any[]=[];// Se inicializa un arreglo vacio
+   */
+  if(this.probar){
+
+    let filterValueArray:String;// Se inicializa un arreglo vacio
+    let filterGradoArray:String// Se inicializa un arreglo vacio
+    let filterMateriaArray:String // Se inicializa un arreglo vacio
+   
+   
+   
+   
     let datosgrado:any[]=[]; // Se inicializa un arreglo vacio
     let filterValue: string;
     let filtervalue:any=""; //string que va a conter el valor ingresado por el usuario en institución
@@ -515,7 +533,7 @@ export class DocenteDialogComponent {
    /* Filtering the data in the table. */
     filterValueArray = this.stateCtrl.value; //Obtiene el valor ingresado por el usuario en el campo institución
     filterGradoArray = this.stateCtrlgrado.value;//Obtiene el valor ingresado por el usuario en el campo grado
-    console.log(filterGradoArray);
+   // console.log(filterGradoArray);
     filterMateriaArray = this.stateCtrlmateria.value; //Obtiene el valor ingresado por el usuario en el campo materia
 
     
@@ -550,12 +568,35 @@ export class DocenteDialogComponent {
   
    /* Filtering the data by the grade. */
    //Recorre el vector y va almacenando los campos que coíndicen con los grados seleccionados.
+   function comparar(valor:string,filtro:string):boolean{
+    if(valor==filtro){
+      return true;
+    }else{
+      return false;
+    }
+   }
     for(let i=0;i<filterGradoArray.length;i++){
      
-      datosgrado.push(this.datosgrado.filter(state => state.grado.includes(filterGradoArray[i])));
+      datosgrado.push(this.datosgrado.filter(state =>comparar(state.grado.trim().toLowerCase().toString(),filterGradoArray[i].
+      trim().toLowerCase().toString())));
     }
 
+   
+
+
+   
+     
+     
+         
+         //Realiza agregación del objeto que coincide con la busqueda del usuario.
+         
+     
+          
     
+     
+        //Se obtiene la o las materias seleccionadas para el estudiante.
+      //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
+   
    
 //Recorre el vector y va almacenando los campos que coíndicen con las materias seleccionadas.
     for(let i=0;i<filterMateriaArray.length;i++){
@@ -568,15 +609,15 @@ export class DocenteDialogComponent {
     
    
 //Extrae los valores de id y grado del vector de datos, que es arreglo de arreglo, por esta razón se utiliza el forEach y después otro ForEach
-    datosgrado.slice().forEach(value=>(value.forEach((value: { id: string; grado:string;})=>(this.gradovalue.push({id:value.id,grado:value.grado}),console.log(value.id)))));
+    datosgrado.slice().forEach(value=>(value.forEach((value: { id: string; grado:string;})=>(this.gradovalue.push({id:value.id,grado:value.grado})))));
    // this.datosgradotarea.slice().forEach(value=>(value.forEach((value: {   })=>(this.gradovalue.push(value.grado),console.log(value.grado)))));
    
    //Extrae los valores de id y nombredel vector de datos de materia, que es arreglo de arreglo, por esta razón se utiliza el forEach y después otro ForEach
-   this.datosmateriatarea.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.materianombre.push({id:value.id,nombre:value.nombre}),console.log(value.id))))); 
+   this.datosmateriatarea.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.materianombre.push({id:value.id,nombre:value.nombre}))))); 
    //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
 
    //Extrae los valores de id y nombre del vector de datos de institución
-    this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre,console.log(value.id)));
+    this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre));
     this.datosinstitucion.slice().forEach(value=>(this.institucionid=value.id));
 
   //Si los datos son nulos.
@@ -594,7 +635,7 @@ export class DocenteDialogComponent {
       }
       );
       if(this.verificar){
-        console.log(this.verificar);
+       
         this._snackBar.open('Espere un momento por favor',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
@@ -603,7 +644,7 @@ export class DocenteDialogComponent {
   
        }
        setTimeout(() => {
-        console.log(this.verificar);
+      
        if(this.verificar){
         this.activate=true;
        this._snackBar.open('El docente ya se encuentra registrado',
@@ -721,7 +762,7 @@ export class DocenteDialogComponent {
        //Actualiza el valor de docente en el caso de que este editando algún valor del docente.
         const respuesta=this._adminService.update(this.data.id,tarea,"Docente/docenteUpdate/").subscribe({next: data => {
         this.datos = data;
-    console.log(this.datos);
+   
         },
         error:error => {
         this.errors = error.message;
@@ -747,6 +788,8 @@ export class DocenteDialogComponent {
     this.comprobar= true;
     this.router.navigate(['/admin/docentes']);
   
+  }
+
   }
     
   }

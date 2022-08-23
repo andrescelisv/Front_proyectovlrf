@@ -25,11 +25,12 @@ export interface interfacemunicipio {
 export class InstitucionDialogComponent {
 
   btnact=false;
+  inicio=false;
   probar:boolean=false;
   probarclick:boolean=false;
   compclick:boolean=false;
-  compclickgrado:boolean=false;
-  probarclickgrado:boolean=false;
+  compclickmun:boolean=false;
+  probarclickmun:boolean=false;
   seleccionado:string="";
   errors:string="";
   seleccionadoMunicipio="";
@@ -104,7 +105,7 @@ export class InstitucionDialogComponent {
       if(data==null){
         this.selectJornada='';
         this.selectZona="";
-      
+        this.verificacion();
         this.form.setValue({
           nombre:"",
           ubicacion:"",
@@ -125,7 +126,7 @@ export class InstitucionDialogComponent {
       
       
       }else{
-       
+        this.verificacion();
         this.stateCtrlmunicipio.enable();
         //this.btnact=true;
         this.spinner=true;
@@ -175,6 +176,7 @@ export class InstitucionDialogComponent {
         this.form.controls['nombre'].setValue(this.valor());
 
         setTimeout(()=>{
+          this.verificacion();
           this.filtrarDepartamento= this.stateCtrl.valueChanges.pipe(
             startWith(''),
             map(state => (state ? this._filtrardepartamento(state) : this.datosdepartamento.slice())),
@@ -233,7 +235,7 @@ export class InstitucionDialogComponent {
         }
         );
         if(this.verificar){
-          console.log(this.verificar);
+         
           this._snackBar.open('Espere un momento por favor',
           '', {horizontalPosition: 'center',
            verticalPosition: 'bottom',
@@ -243,7 +245,7 @@ export class InstitucionDialogComponent {
          }
         
         setTimeout(() => {
-         // console.log(this.verificar);
+      
         if(this.verificar){
          this.activate=true;
         this._snackBar.open('La institución ya se encuentra registrada',
@@ -275,7 +277,7 @@ export class InstitucionDialogComponent {
         
         const respuesta=this._adminService.create(tarea,"institucion/addInstitucion/").subscribe({next: data => {
           this.datos = data;
-          console.log("create: "+this.datos);
+         
       
           },
           error:error => {
@@ -285,7 +287,7 @@ export class InstitucionDialogComponent {
         }
         );
         setTimeout(() => {
-          //console.log(this.datos);
+         
           if(this.datos.message=="success"){
             this._snackBar.open('Institución agregada con exito',
             '', {horizontalPosition: 'center',
@@ -322,10 +324,10 @@ export class InstitucionDialogComponent {
         municipio: this.stateCtrlmunicipio.value.toString(),
         departamento: this.stateCtrl.value.toString() 
       }
-      console.log(tarea);
+      
         const respuesta=this._adminService.update(this.data.id,tarea,"institucion/institucionUpdate/").subscribe({next: data => {
         this.datos = data;
-    console.log(this.datos);
+   
         },
         error:error => {
         this.errors = error.message;
@@ -335,7 +337,7 @@ export class InstitucionDialogComponent {
       );
   
       setTimeout(() => {
-        console.log(this.datos);
+       
         if(this.datos.message=="success"){
           this._snackBar.open('Institución actualizada con exito',
           '', {horizontalPosition: 'center',
@@ -360,25 +362,27 @@ export class InstitucionDialogComponent {
   verificacion(){
   
     //console.log(this.stateCtrlmateria.value);
-    console.log(this.datosmunicipio);
-    this.datosdepartamento.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectiondep.toString().trim().toLowerCase() ? (this.compclick=true,console.log("entre")):"",console.log(state.nombre.trim().toLowerCase()) ));
-    this.datosmunicipio.forEach(state=> (state.municipio.trim().toLowerCase() === this.selectionmun.toString().trim().toLowerCase() ?(this.compclickgrado=true,console.log("entre")) : "",console.log(state.municipio.trim().toLowerCase())));
+    
+    this.datosdepartamento.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectiondep.toString().trim().toLowerCase() ? (this.compclick=true):"" ));
+    this.datosmunicipio.forEach(state=> (state.municipio.trim().toLowerCase() === this.selectionmun.toString().trim().toLowerCase() ?(this.compclickmun=true) : ""));
     if(this.compclick){this.probarclick=true}else{this.probarclick=false};
-    if(this.compclickgrado){this.probarclickgrado=true}else{this.probarclickgrado=false};
+    if(this.compclickmun){this.probarclickmun=true}else{this.probarclickmun=false};
     
     this.compclick=false;
-    this.compclickgrado=false;
+    this.compclickmun=false;
     
-    if(this.selectiondep.length>0 && this.selectionmun.length>0 && this.datosmunicipio.length>0 && this.datosdepartamento.length>0 && (this.probarclick && this.probarclickgrado)){
+    if(this.selectiondep.length>0 && this.selectionmun.length>0 && this.datosmunicipio.length>0
+       && this.datosdepartamento.length>0 && (this.probarclick && this.probarclickmun)){
       this.btnact=true;
       this.probar=true;
       
-      //console.log("click verificación true");
+  
     }else{
       this.btnact=false;
       this.probar=false;
-      //console.log("click verificación false");
+    
     }
+    this.inicio=true;
    }
 
     selectedMunicipio(event: MatAutocompleteSelectedEvent): void {
@@ -396,7 +400,7 @@ export class InstitucionDialogComponent {
        this.spinner=false;
       const respuesta=this._adminService.getAll("Departamento_municipio/queryname/"+this.seleccionado+"/").subscribe({next: data => {
         this.datosmunicipio = data.body;
-        console.log("datos institución: "+this.datosdepartamento.slice());
+     
         },
         error:error => {
         this.errors = error.message;
@@ -419,8 +423,7 @@ export class InstitucionDialogComponent {
           );
   
           
-    
-          console.log("filtrargrado"+this.filtrarmunicipio.forEach(value=>console.log(value)));
+
           
         }
       },3000);

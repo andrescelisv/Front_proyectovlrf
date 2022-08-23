@@ -40,3 +40,16 @@ input[type=text], select {
     height: 3px;
     
 }
+
+.inputerrorinputicon{
+  color:red;
+  display: flex;
+  align-items: center;
+  font-size: small;
+  width: 100%;
+  height: 3px;
+}
+
+.red-text {
+  color: red;
+}

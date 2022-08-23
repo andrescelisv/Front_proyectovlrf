@@ -1,71 +1,71 @@
 export const navbarData = [
     {
-        routeLink: 'admin/dashboard',
+        routeLink: 'dashboard',
         icon: 'fa fa-home',
         label: 'Dashboard'
     },
     {
-        routeLink: 'admin/docentes',
+        routeLink: 'docentes',
         icon: 'fa fa-user',
         label: 'Docentes'
     },
     {
-        routeLink: 'admin/estudiantes',
+        routeLink: 'estudiantes',
         icon: 'fa fa-graduation-cap',
         label: 'Estudiantes'
     },
     {
-        routeLink: 'admin/grado',
+        routeLink: 'grado',
         icon: 'fa fa-user-circle',
         label: 'Grado'
     },
     {
-        routeLink: 'admin/institucion',
+        routeLink: 'institucion',
         icon: 'fa fa-university',
         label: 'Institucion'
     },
     {
-        routeLink: 'admin/materias',
+        routeLink: 'materias',
         icon: 'fa fa-book',
         label: 'Materias'
     },
     {
-        routeLink: 'admin/usuario',
+        routeLink: 'usuario',
         icon: "fa fa-user-circle",
         label: 'Usuario'
     },
     {
-        routeLink: 'admin/rhu',
+        routeLink: 'rhu',
         icon: "fa fa-history",
         label: 'Registro de historial de usuario'
     },
     {
-        routeLink: 'admin/nd',
+        routeLink: 'nd',
         icon: "fa fa-level-down",
         label: 'Indicador de desempeño'
     },
     {
-        routeLink: 'admin/lv',
+        routeLink: 'lv',
         icon: "fa fa-play",
         label: 'Lista de videos'
     },
     {
-        routeLink: 'admin/valvideos',
+        routeLink: 'valvideos',
         icon: "fa fa-star",
         label: 'Valoración de videos'
     },
     {
-        routeLink: 'admin/ra',
+        routeLink: 'ra',
         icon: "fa fa-eye",
         label: 'Ruta de aprendizaje'
     },
     {
-        routeLink: 'admin/comentario',
+        routeLink: 'comentario',
         icon: "fa fa-comments",
         label: 'Comentarios'
     },
     {
-    routeLink: 'admin/tc',
+    routeLink: 'tc',
     icon: "fa fa-level-down",
     label: 'Indicador de desempeño'
     },

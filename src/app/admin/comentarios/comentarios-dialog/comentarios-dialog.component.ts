@@ -92,6 +92,7 @@ export class ComentariosDialogComponent {
   showAlert:boolean=false;  //Muestra un mensaje toots con un mensaje de alerta.
   showAlertMat:boolean= false; //Muestra un mensaje toots con un mensaje de alerta.
   //Inicializa el objeto datos que contiene la estructura de la respuesta por parte del back.
+  inicio:boolean=false;
   showAlertEst:boolean= false;
   showAlertDoc:boolean= false;
   datos: responseproyect={
@@ -102,6 +103,19 @@ export class ComentariosDialogComponent {
 
   verificar:boolean=true;
   activate:boolean=false;
+  probar:boolean=false;
+  probarclick:boolean=false;
+  compclick:boolean=false;
+  compclickest:boolean=false;
+  compclickdoc:boolean=false;
+  compclickdba:boolean=false;
+  compclickgra:boolean=false;
+  compclickmat:boolean=false;
+  probarclickest:boolean=false;
+  probarclickdoc:boolean=false;
+  probarclickdba:boolean=false;
+  probarclickgra:boolean=false;
+  probarclickmat:boolean=false;
   
   datosgradotarea:any[]=[]; //Vector que almacena los grados seleccionado por el usuario para el docente.
   datosmateriatarea:any[]=[];  //Vector que almacena las materias seleccionadas por el usuario para el docente.
@@ -119,6 +133,7 @@ export class ComentariosDialogComponent {
   selectiondoc:any[]=[];
   selectiongra:any[]=[];
   selectionmat:any[]=[];
+  selectionins:any[]=[];
 
   estudiantenombre: any[]=[];
   docentenombre: any[]=[];
@@ -153,11 +168,12 @@ export class ComentariosDialogComponent {
     })
    
     
-    console.log(this.data);
+   // console.log(this.data);
 
     //Si los datos son para agregar se utiliza está opción
     if(data==null){
       //this.select='Admin';
+      this.verificacion();
     
       this.form.setValue({
         videourl:"",  //Inicializar el input de nombre
@@ -189,7 +205,7 @@ export class ComentariosDialogComponent {
       //this.btnact=true; //Activa el botón guardar
       this.spinner=true; // Habilita el cargador del spinner
       
-     
+      this.verificacion();
    
      
       
@@ -207,11 +223,24 @@ export class ComentariosDialogComponent {
 
     this.selectionest.push(this.setest[0].nombre);
     this.selectiondoc.push(this.setdoc[0].nombre);
-    this.selectiongra.push(this.setest[0].nombre);
-     this.selectionmat.push(this.setdoc[0].nombre);
+    this.selectiongra.push(this.setgra[0].grado);
+     this.selectionmat.push(this.setmat[0].nombre);
+     this.selectionins.push(this.setins[0].nombre);
    
 
-    this.stateCtrl.setValue(this.setins.map(value => value.nombre)); //Inicializa el input de institución, no obstante esta parte
+    //this.stateCtrl.setValue(this.setins.map(value => value.nombre)); 
+    
+    this.stateCtrl.setValue(this.setins[0].nombre);
+    
+    
+    
+    
+    //Inicializa el input de institución, no obstante esta parte
+    
+    
+    
+    
+    
     //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
       
 
@@ -254,7 +283,7 @@ export class ComentariosDialogComponent {
    //Obtiene del back los grado asociados a la institución consultada.
     this._adminService.getAll("Grado/queryname/"+this.setins.map(value => value.nombre)+"/").subscribe({next: data => {
       this.datosgrado = data.body;
-      console.log(this.datosgrado);
+      //console.log(this.datosgrado);
       
       },
       error:error => {
@@ -277,7 +306,7 @@ export class ComentariosDialogComponent {
 
     this._adminService.getAll("Docente/queryname/"+this.setins.map(value => value.nombre)+"/").subscribe({next: data => {
       this.datosdocente = data.body;
-      console.log(this.datosdocente);
+      //console.log(this.datosdocente);
       },
       error:error => {
       this.errors = error.message;
@@ -288,7 +317,7 @@ export class ComentariosDialogComponent {
     //Obtiene las materias asociadas a una institución
     this._adminService.getAll("Estudiante/queryname/"+this.setins.map(value => value.nombre)+"/").subscribe({next: data => {
       this.datosestudiante = data.body;
-      console.log(this.datosestudiante);
+      //console.log(this.datosestudiante);
       },
       error:error => {
       this.errors = error.message;
@@ -298,6 +327,8 @@ export class ComentariosDialogComponent {
     );
      //Filtra la busqueda de los grados ingresados por el usuario
      setTimeout(() => {
+
+      this.verificacion();
     this.filtrargrado = this.stateCtrlgrado.valueChanges.pipe(
       startWith(''),
       map(state => (state ? this._filtrargrado(state) : this.datosgrado.slice())),
@@ -358,7 +389,7 @@ export class ComentariosDialogComponent {
   
   selectedDocentes(event: MatAutocompleteSelectedEvent): void {
     //this.seleccionadostr=(event.option.viewValue);
-    console.log(this.seleccionadostr);
+    //console.log(this.seleccionadostr);
 
     if(this.stateCtrlestudiantes.value.length>0 && this.stateCtrlgrado.value.length>0 && this.stateCtrlmateria.value.length>0){
       this.btnact=true;
@@ -401,7 +432,7 @@ export class ComentariosDialogComponent {
    //Almacena la selección del input materia
   selectedMateria(event: MatAutocompleteSelectedEvent): void {
     this.seleccionadoMat=(event.option.viewValue);
-    console.log("seleccionado str: "+this.seleccionadoMat);
+    //console.log("seleccionado str: "+this.seleccionadoMat);
 
    if(this.seleccionadoMat.length>0){
     this.btnact=true;
@@ -422,7 +453,7 @@ export class ComentariosDialogComponent {
     //grados asociados a la institución.
     this._adminService.getAll("Grado/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosgrado=data.body;
-      console.table(data.body);
+      
       },
       error:error => {
       this.errors = error.message;
@@ -446,7 +477,7 @@ export class ComentariosDialogComponent {
     
     this._adminService.getAll("Docente/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosdocente = data.body;
-      console.log(this.datosdocente);
+   
       },
       error:error => {
       this.errors = error.message;
@@ -457,7 +488,7 @@ export class ComentariosDialogComponent {
     //Obtiene las materias asociadas a una institución
     this._adminService.getAll("Estudiante/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosestudiante = data.body;
-      console.log(this.datosestudiante);
+     
       },
       error:error => {
       this.errors = error.message;
@@ -509,7 +540,7 @@ export class ComentariosDialogComponent {
 
       if(this.datosmateria.length>0){
         //Si la cantidad de datos de materia que llegan son mayores que 0 entones se habilita el campo para ingresar las materias.
-        console.table("datos materia: "+this.datosmateria.forEach(value=>console.log(value)));
+        //console.table("datos materia: "+this.datosmateria.forEach(value=>console.log(value)));
         this.showAlertMat=false; // Se quita la alerta
         this.stateCtrlmateria.enable(); // Se habilita el input de materia.
         
@@ -527,22 +558,69 @@ export class ComentariosDialogComponent {
   }
 
   verificacion(){
-    if(this.selectionest.length>5 && this.selectiondoc.length>5 && this.selectiongra.length>5 && this.selectionmat.length>5){
-      this.btnact=true;
-    }else{
-      this.btnact=false;
-    }
+    this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"") );
+      this.datosestudiante.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectionest.toString().trim().toLowerCase() ?(this.compclickest=true) : ( "")));
+      this.datosdocente.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectiondoc.toString().trim().toLowerCase() ?(this.compclickdoc=true) : ( "")));
+      //this.datosdba.forEach(state=> (state.identificador.trim().toLowerCase() === this.selectiondba.toString().trim().toLowerCase() ?(this.compclickdba=true) : ""));
+      this.datosgrado.forEach(state=> (state.grado.trim().toLowerCase() === this.selectiongra.toString().trim().toLowerCase() ?(this.compclickgra=true) : ""));
+      this.datosmateria.forEach(state=> (state.nombre.trim().toLowerCase() === this.selectionmat.toString().trim().toLowerCase() ?(this.compclickmat=true) : ""));
+     
+      if(this.compclick){(this.probarclick=true)}else{this.probarclick=false};
+      if(this.compclickest){this.probarclickest=true}else{this.probarclickest=false};
+      if(this.compclickdoc){this.probarclickdoc=true}else{this.probarclickdoc=false};
+      //if(this.compclickdba){this.probarclickdba=true}else{this.probarclickdba=false};
+      if(this.compclickgra){this.probarclickgra=true}else{this.probarclickgra=false};
+      if(this.compclickmat){this.probarclickmat=true}else{this.probarclickmat=false};
+      this.compclick=false;
+      this.compclickest=false;
+      this.compclickdoc=false;
+     // this.compclickdba=false;
+      this.compclickgra=false;
+      this.compclickmat=false;
+     
+     // console.log(this.datosdba);
+   
+      if(this.selectionins.length>0 && this.selectionest.length>0 && this.selectiondoc.length>0  
+        && this.selectiongra.length>0 && this.selectionmat.length>0 
+        && this.datosinstitucion.length>0 && this.datosestudiante.length>0 && this.datosdocente.length>0 && this.datosgrado.length>0 && this.datosmateria.length>0 &&
+        (this.probarclick && this.probarclickest && this.probarclickdoc && this.probarclickgra && this.probarclickmat)
+        
+        
+        ){
+        this.btnact=true;
+        this.probar=true;
+        //console.log("click verificación true");
+      }else{
+        this.btnact=false;
+       
+      }
+      this.inicio=true;
    }
+  
   
 
    Ingresar(){
-   
+   if(this.probar){
+//Estos son los parametros originales
+    /*
     let filterValueArray:any[]=[];
     let filterDBAArray:any[]=[];
     let filterMateriaArray:any[]=[];
     let filterGradoArray:any[]=[];
     let filterDocentesArray:any[]=[];
     let filterEstudiantesArray:any[]=[];
+*/
+
+    let filterValueArray:String;
+    let filterDBAArray:String
+    let filterMateriaArray:String;
+    let filterGradoArray:String;
+    let filterDocentesArray:String;
+    let filterEstudiantesArray:String;
+
+
+
+
     let datosdba:any[]=[];
     let datosestudiante:any[]=[];
     let datosdocente:any[]=[];
@@ -629,7 +707,7 @@ export class ComentariosDialogComponent {
  
   
      //Se obtiene la o las materias seleccionadas para el estudiante.
-     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre})))));
    //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
   
    filtervaluedocente = filterDocentesArray;
@@ -648,7 +726,7 @@ export class ComentariosDialogComponent {
   
    
       //Se obtiene la o las materias seleccionadas para el estudiante.
-      datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+      datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre})))));
     //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
 
    
@@ -675,7 +753,7 @@ export class ComentariosDialogComponent {
    
     
        //Se obtiene la o las materias seleccionadas para el estudiante.
-       datosmateria.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.materianombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+       datosmateria.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.materianombre.push({id:value.id,nombre:value.nombre})))));
      
        filtervaluegrado = filterGradoArray;
        if(typeof filtervaluegrado != 'string'){
@@ -693,10 +771,10 @@ export class ComentariosDialogComponent {
       
        
           //Se obtiene la o las materias seleccionadas para el estudiante.
-          datosgrado.slice().forEach(value=>(value.forEach((value: { id: string; grado:string;})=>(this.gradonombre.push({id:value.id,grado:value.grado}),console.log(value.id)))));
+          datosgrado.slice().forEach(value=>(value.forEach((value: { id: string; grado:string;})=>(this.gradonombre.push({id:value.id,grado:value.grado})))));
         //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
      
-     console.log(datosgrado);
+    
      
        //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
    //Se obtiene la institución seleccionada para el estudiante
@@ -707,7 +785,7 @@ export class ComentariosDialogComponent {
    
     // Se crea el objeto tareas.
     if(this.data==null){ 
-      this._adminService.getCustomRA("RA/queryestudianteRA",'nombreestudiante','nombremateria','grado','nombredocente',this.stateCtrlestudiantes.value,this.stateCtrlmateria.value,this.stateCtrlgrado.value,this.stateCtrldocentes.value).subscribe({next: data => {
+      this._adminService.getCustomRA("comentario/queryestudianteComentario",'nombreestudiante','nombremateria','grado','nombredocente',this.stateCtrlestudiantes.value,this.stateCtrlmateria.value,this.stateCtrlgrado.value,this.stateCtrldocentes.value).subscribe({next: data => {
         this.verificar = data.body;
         
         },
@@ -718,7 +796,7 @@ export class ComentariosDialogComponent {
       }
       );
       if(this.verificar){
-        console.log(this.verificar);
+       
         this._snackBar.open('Espere un momento por favor',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
@@ -728,7 +806,7 @@ export class ComentariosDialogComponent {
        }
       
       setTimeout(() => {
-        console.log(this.verificar);
+        
       if(this.verificar){
        this.activate=true;
       this._snackBar.open('Los comentarios ya se encuentran registrados',
@@ -746,7 +824,7 @@ export class ComentariosDialogComponent {
       }
      
       if(!this.verificar){
-        console.log(this.verificar);
+       
       const tarea:any={
         videourl:this.form.value.videourl,
         comentario:[{
@@ -780,7 +858,7 @@ export class ComentariosDialogComponent {
       }
     
       
-      console.log(tarea);
+     
       const respuesta=this._adminService.create(tarea,"comentario/addCOMENTARIO/").subscribe({next: data => {
       this.datos = data;
      
@@ -795,7 +873,7 @@ export class ComentariosDialogComponent {
 
      //Genera un toost tanto para si el docente fue creado como sino.
      setTimeout(() => {
-      console.log(this.datos);
+     
       if(this.datos.message=="success"){
         this._snackBar.open('Comentario agregado con exito',
         '', {horizontalPosition: 'center',
@@ -853,9 +931,9 @@ export class ComentariosDialogComponent {
       
        /* The above code is updating the data in the database. */
        //Actualiza el valor de docente en el caso de que este editando algún valor del docente.
-        const respuesta=this._adminService.update(this.data.id,tarea,"Docente/docenteUpdate/").subscribe({next: data => {
+        const respuesta=this._adminService.update(this.data.id,tarea,"comentario/COMENTARIOUpdate/").subscribe({next: data => {
         this.datos = data;
-    console.log(this.datos);
+    //console.log(this.datos);
         },
         error:error => {
         this.errors = error.message;
@@ -880,7 +958,7 @@ export class ComentariosDialogComponent {
     }
     this.comprobar= true;
     this.router.navigate(['/admin/comentario']);
-  
+    }
   }
     
   }

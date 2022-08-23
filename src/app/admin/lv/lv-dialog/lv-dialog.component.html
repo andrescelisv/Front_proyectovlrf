@@ -31,6 +31,13 @@
           </mat-form-field>
           
           <app-control-messages  [control]="stateCtrl"></app-control-messages>
+
+          <div *ngIf=" probarclick == false && inicio">
+            <button class="btn" [swal]="['La institución no se encuentra en la base de datos']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
+         
           
           <mat-spinner *ngIf="loadingEst" diameter="30" class="spinner"></mat-spinner>
         <div *ngIf="spinnerEst">
@@ -62,6 +69,13 @@
           </mat-form-field>
 
               <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
+              <div *ngIf=" probarclickest == false && inicio ">
+                <button class="btn" [swal]="['El estudiante no se encuentra asignado a la institucion']">
+                  <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                  <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+              </div>
+              
+              
         
         </div>
         <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
@@ -82,6 +96,10 @@
                        
                         <span class="textoerrorinput">Tiene un elemento de tipo & no correcto</span>
                         <br>
+
+                        <button class="btn" [swal]="['La url del video contiene el caracter &, por lo cual debe removerlo del video, ya que no se aceptán como entrada']">
+                          <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                          <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
                     </div>
                     <ng-template #elseBlock></ng-template>
 
@@ -99,6 +117,13 @@
             <button class="button" mat-flat-button color="primary"  (click)="addControl()"> Añadir video </button>
         
             <app-control-messages [control]="form.get('listaVideos')"></app-control-messages>
+
+            <div *ngIf="amper && inicio">
+              <button class="btn" [swal]="['El video tiene un caracter & no permitido']">
+                <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+            </div>
+           
 
           <mat-form-field  appearance="fill">
             <mat-label>DBA</mat-label>
@@ -118,8 +143,8 @@
                     </div>
                 </div>
             <mat-autocomplete #autodba="matAutocomplete" (optionSelected)="selecteddba($event)">
-              <mat-option *ngFor="let state of filtrardba | async" [value]="state.identificador">
-                <span>{{state.identificador}}</span>
+              <mat-option *ngFor="let state of filtrardba | async" [value]="state">
+                <span>{{state}}</span>
      
                 
               </mat-option>
@@ -127,6 +152,13 @@
           </mat-form-field>
           
           <app-control-messages  [control]="stateCtrldba"></app-control-messages>
+          <div *ngIf="probarclickdba == false && inicio">
+            <button class="btn" [swal]="['El valor de dba seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
+        
+          
 
           <mat-form-field  appearance="fill">
             <mat-label>Docente</mat-label>
@@ -155,7 +187,12 @@
           </mat-form-field>
 
               <app-control-messages  [control]="stateCtrldocentes"></app-control-messages>
-
+              <div *ngIf=" probarclickdoc == false && inicio">
+                <button class="btn" [swal]="['El docente no se encuentra registrado en la institución']">
+                  <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                  <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+              </div>
+              
 
              
 

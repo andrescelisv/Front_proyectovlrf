@@ -56,17 +56,17 @@ export class TableConsumerAddComponent {
 
   ngOnInit(): void {
     this.tipos= this.tipos.concat('acciones');
-    console.log("antes de displayed"+this.tipos);
+    //console.log("antes de displayed"+this.tipos);
     this.displayedColumns= this.tipos;
-    console.log(this.displayedColumns);
+    //console.log(this.displayedColumns);
     this.getAll();
     
 
-    console.log(this.tipos);
+    
 
     const respuesta=this._adminService.getAll("institucion/all/").subscribe({next: data => {
       this.datosinstitucion = data.body;
-      console.table(this.datosinstitucion);
+      
       },
       error:error => {
       this.errors = error.message;
@@ -90,36 +90,35 @@ export class TableConsumerAddComponent {
          
           if(data instanceof Object){
             const entradas= Object.entries(data);
-            console.log(entradas);
+            
             for(let i=0;i<entradas.length;i++){
               let entradas1 = Object.entries(entradas[i]);
               console.log(entradas1)
               let valor= entradas1[1];
-              console.log(valor);
+             
               
               if(valor[1] instanceof Array){
-                console.log(typeof(valor[1]));
+              
                 let array:Array<String> =Object.values(valor[1])
-                console.log(array[0]);
+              
                let internal:Array<String>= Object.values(array[0]);
-                console.log(internal);
-                console.log("true del array");
+            
                 let retorno=internal.map((e:any)=>e instanceof Array ? e : e.toString().toLowerCase().trim().includes(filter.trim()
                 .toLowerCase()))
                 .map(e=>{return e});
                
                 console.log(retorno);
                 if(internal.toString().toLowerCase().trim().includes(filter.trim().toLowerCase())){
-                  console.log("true interno del map");
+                 
                   return true;
                 }
                 
                 
               }else{
                 //if(valor[1] .toLowerCase().includes(filter.trim().toLowerCase())){
-                console.log(valor[1]) 
+               
                 let valor2 = String(valor[1]);
-                console.log(valor2);
+              
 
                 if(valor2.toLowerCase().includes(filter.trim().toLowerCase())){
                   return true;
@@ -136,7 +135,7 @@ export class TableConsumerAddComponent {
 
 
             }
-            console.log("ultimo true")
+           
             return true;
           
         }else{
@@ -153,12 +152,12 @@ export class TableConsumerAddComponent {
     this._adminService.getAll(this.url.get)
     .subscribe({next: data => {
       this.tareas = data;
-      console.table(this.tareas?.body)
+     
       this.dataSource = new MatTableDataSource(this.tareas?.body);
       
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-      console.log("itemval"+this.itemval);
+      
       
     },
     error:error => {
@@ -216,7 +215,7 @@ export class TableConsumerAddComponent {
 
 
   buscar(event: Event){
-    console.log(this.tareas.body[0].id);
+    
    
   }
 
@@ -246,17 +245,17 @@ export class TableConsumerAddComponent {
               
                 return true;
               }else{
-                console.log("no");
+                
                 return false;}
               
             
         case "RA":
           var comprobar:boolean=false;  
           var valor=d.dba.map((e:any)=>{
-            console.log(e); 
+         
             
             if(e.dba.trim().toLowerCase().includes(filter.trim().toLowerCase())){
-              console.log("valor: "+true);
+           
               comprobar=true;
              
                 return true;
@@ -272,7 +271,7 @@ export class TableConsumerAddComponent {
              }
             }
           });
-          console.log("el valor obtenido: "+Object.entries(valor) );
+         
           if(
             d.docente[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())
             || d.estudiante[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
@@ -281,10 +280,10 @@ export class TableConsumerAddComponent {
             d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
             d.fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) || comprobar
             ){
-            console.log(this.componente);
+            
               return true;
             }else{
-              console.log("no");
+              
               return false;}
             
 
@@ -295,19 +294,19 @@ export class TableConsumerAddComponent {
             d.videourl.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
             d.val.trim().toLowerCase().includes(filter.trim().toLowerCase())
             ){
-            console.log(this.componente);
+            
               return true;
             }else{
-              console.log("no");
+             
               return false;}
 
       case "Lista Videos":
         var comprobar:boolean=false;  
          var valor=d.lv[0].listaVideos.map((e:any)=>{
-            console.log(e); 
+      
             
             if(e.video.trim().toLowerCase().includes(filter.trim().toLowerCase())){
-              console.log("valor: "+true);
+              
               comprobar=true;
              
                 return true;
@@ -330,10 +329,10 @@ export class TableConsumerAddComponent {
           d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
           d.lv[0].fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) || comprobar
           ){
-          console.log(this.componente);
+          
             return true;
           }else{
-            console.log("no");
+          
             return false;}
 
         case "ND":
@@ -346,10 +345,10 @@ export class TableConsumerAddComponent {
             d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
             d.nd[0].fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
             ){
-            console.log(this.componente);
+           
               return true;
             }else{
-              console.log("no");
+             
               return false;}
 
         case "RHU":
@@ -362,10 +361,10 @@ export class TableConsumerAddComponent {
             d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
             d.dba[0].fecha.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
             ){
-            console.log(this.componente);
+         
               return true;
             }else{
-              console.log("no");
+           
               return false;}
 
         case "Usuario":
@@ -375,10 +374,10 @@ export class TableConsumerAddComponent {
             d.rol.trim().toLowerCase().includes(filter.trim().toLowerCase()) || 
             d.password.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
             ){
-            console.log(this.componente);
+         
               return true;
             }else{
-              console.log("no");
+              
               return false;}
 
         case "Materia":
@@ -390,10 +389,10 @@ export class TableConsumerAddComponent {
                   d.nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())  ||
                   d.area.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
                   ){
-                  console.log(this.componente);
+                  
                     return true;
                   }else{
-                    console.log("no");
+                 
                     return false;}
 
           case "Institución":
@@ -407,10 +406,10 @@ export class TableConsumerAddComponent {
                               d.departamento.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
                               d.ubicacion.trim().toLowerCase().includes(filter.trim().toLowerCase()) 
                               ){
-                              console.log(this.componente);
+                         
                                 return true;
                               }else{
-                                console.log("no");
+                              
                                 return false;}
 
         case "Grado":
@@ -421,10 +420,10 @@ export class TableConsumerAddComponent {
                                     || d.institucion[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
                                     d.jornada.trim().toLowerCase().includes(filter.trim().toLowerCase())
                                     ){
-                                    console.log(this.componente);
+                              
                                       return true;
                                     }else{
-                                      console.log("no");
+                                    
                                       return false;}
         
         case "Estudiante":
@@ -438,19 +437,19 @@ export class TableConsumerAddComponent {
                                           d.grado[0].grado.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
                                           d.materia[0].nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())
                                           ){
-                                          console.log(this.componente);
+                                        
                                             return true;
                                           }else{
-                                            console.log("no");
+                                           
                                             return false;}
 
         case "Docente":
           var comprobar:boolean=false;  
           var valor=d.grado.map((e:any)=>{
-             console.log(e); 
+             
              
              if(e.grado.trim().toLowerCase().includes(filter.trim().toLowerCase())){
-               console.log("valor: "+true);
+               
                comprobar=true;
               
                  return true;
@@ -469,10 +468,9 @@ export class TableConsumerAddComponent {
 
            var comprobar1:boolean=false;  
           var valor=d.materia.map((e:any)=>{
-             console.log(e); 
-             
+            
              if(e.nombre.trim().toLowerCase().includes(filter.trim().toLowerCase())){
-               console.log("valor: "+true);
+             
                comprobar1=true;
               
                  return true;
@@ -500,10 +498,10 @@ export class TableConsumerAddComponent {
             comprobar ||
            comprobar1
             ){
-            console.log(this.componente);
+          
               return true;
             }else{
-              console.log("no");
+             
               return false;}
             
         default: 
@@ -519,7 +517,7 @@ export class TableConsumerAddComponent {
       
       
     };
-    console.log(this.dataSource);
+   
     this.dataSource.filter = filterValue.trim().toLowerCase();
     
     
@@ -528,8 +526,6 @@ export class TableConsumerAddComponent {
       this.dataSource.paginator.firstPage();
     }
 
-    console.log(this.dataSource.filteredData)
-    console.log(this.dataSource.filterPredicate);
   }
 
   openDialogEdit(tarea:any){
@@ -564,7 +560,7 @@ export class TableConsumerAddComponent {
 
 
   addUser(comprobacion:any):void{
-    console.log("se ejecuta el addUser: "+comprobacion);
+  
     
     this.getAll();
     /*console.log(comprobacion);
@@ -578,8 +574,7 @@ export class TableConsumerAddComponent {
   }
 
  busqueda(tarea:any){
-  console.log(this.termino);
-  console.log(tarea);
+
  }
 
  teclaPresionada(valor:any){
@@ -598,4 +593,6 @@ export class TableConsumerAddComponent {
   }
   ); 
  }
+
+ 
 }

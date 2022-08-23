@@ -29,6 +29,7 @@ export interface interfacegrado {
 })
 export class GradoDialogComponent {
   btnact=false;
+  inicio=false;
   seleccionado:string="";
   errors:string="";
   gradonombre="";
@@ -84,7 +85,7 @@ export class GradoDialogComponent {
   @Inject(MAT_DIALOG_DATA) public data: any) {
     const respuesta=this._adminService.getAll("institucion/all/").subscribe({next: data => {
       this.datosinstitucion = data.body;
-      console.log("datos institución: "+this.datosinstitucion.slice());
+      
       },
       error:error => {
       this.errors = error.message;
@@ -100,7 +101,7 @@ export class GradoDialogComponent {
     
         if(data==null){
           this.selectJornada='';
-        
+          this.verificacion();
           this.form.setValue({
             grupo:"",
             jornada:""
@@ -111,20 +112,20 @@ export class GradoDialogComponent {
               startWith(''),
               map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
             );
-          console.log("this institucion: "+this.filtrarinstitucion.forEach(value=>console.log(value)));
+          
         
           this.filtrargrado = this.stateCtrlgrado.valueChanges.pipe(
             startWith(''),
             map(state => (state ? this._filtrargrado(state) : this.datosgrado.slice())),
           );
-        console.log("this grado: "+this.filtrargrado.forEach(value=>console.log(value)));
+        
 
           },500);
             
       
         
         }else{
-         
+          this.verificacion();
          
           this.btnact=true;
           this.spinner=true;
@@ -140,7 +141,7 @@ export class GradoDialogComponent {
 
         this.setins=data.institucion;  //Obtiene los datos de institución de la base de datos, apartir de la consulta realizada inicialmente
     this.setgra=data.grado;  //Obtiene los datos de grado de la base de datos, apartir de la consulta realizada inicialmente
-      console.log(this.setgra);
+      
         this.selectiongra.push(this.setgra);
         
         this.selectionins.push(this.setins[0].nombre);
@@ -154,6 +155,7 @@ export class GradoDialogComponent {
         this.stateCtrlgrado.addValidators(Validators.required);
        
         setTimeout(()=>{
+          this.verificacion();
           this.filtrarinstitucion = this.stateCtrl.valueChanges.pipe(
             startWith(''),
             map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
@@ -190,10 +192,10 @@ selectedgrado(event: MatAutocompleteSelectedEvent): void {
 
 verificacion(){
   
-  //console.log(this.stateCtrlmateria.value);
+
   
-  this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true,console.log("entre")):"",console.log(state.nombre.trim().toLowerCase()) ));
-  this.datosgrado.forEach(state=> (state.grado.trim().toLowerCase() === this.selectiongra.toString().trim().toLowerCase() ?(this.compclickgrado=true,console.log("entre")) : "",console.log(state.grado.trim().toLowerCase())));
+  this.datosinstitucion.forEach(state=>( state.nombre.trim().toLowerCase() === this.selectionins.toString().trim().toLowerCase() ? (this.compclick=true):"" ));
+  this.datosgrado.forEach(state=> (state.grado.trim().toLowerCase() === this.selectiongra.toString().trim().toLowerCase() ?(this.compclickgrado=true) : ""));
   if(this.compclick){this.probarclick=true}else{this.probarclick=false};
   if(this.compclickgrado){this.probarclickgrado=true}else{this.probarclickgrado=false};
   
@@ -207,8 +209,9 @@ verificacion(){
   }else{
     this.btnact=false;
     this.probar=false;
-    //console.log("click verificación false");
+
   }
+  this.inicio=true;
  }
 
 selected(event: MatAutocompleteSelectedEvent): void {
@@ -226,7 +229,7 @@ selected(event: MatAutocompleteSelectedEvent): void {
    }else{
     this.btnact=false;
     
-    //console.log("false");
+   
    }
   },1000)
   
@@ -240,18 +243,18 @@ selected(event: MatAutocompleteSelectedEvent): void {
 
    
     const filterValue = this.stateCtrl.value;
-    console.log("filtervalue: "+filterValue);
+   
     this.datosinstitucion=this.datosinstitucion.filter(state => state.nombre.includes(filterValue));
 
-    this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre,console.log(value.id)));
+    this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre));
     this.datosinstitucion.slice().forEach(value=>(this.institucionid=value.id));
 
 
    const filterValueGrado = this.stateCtrlgrado.value;
-   console.table(filterValueGrado);
+  
     this.datosgrado=this.datosgrado.filter(state => state.grado.includes(filterValueGrado));
     
-    this.datosgrado.slice().forEach(value=>(this.gradonombre=value.grado,console.log(value.grado)));
+    this.datosgrado.slice().forEach(value=>(this.gradonombre=value.grado));
     
    
 
@@ -269,7 +272,7 @@ selected(event: MatAutocompleteSelectedEvent): void {
       }
       );
       if(this.verificar){
-        console.log(this.verificar);
+       
         this._snackBar.open('Espere un momento por favor',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
@@ -279,7 +282,7 @@ selected(event: MatAutocompleteSelectedEvent): void {
        }
       
       setTimeout(() => {
-       // console.log(this.verificar);
+       
       if(this.verificar){
        this.activate=true;
       this._snackBar.open('El grado ya se encuentra registrado',
@@ -305,11 +308,11 @@ selected(event: MatAutocompleteSelectedEvent): void {
       institucion:[{nombre: this.institucionnombre, id:this.institucionid}]
       }
 
-      console.log("tarea: "+tarea);
+      
       
       const respuesta=this._adminService.create(tarea,"Grado/addGrado/").subscribe({next: data => {
         this.datos = data;
-        console.log("create: "+this.datos);
+        
     
         },
         error:error => {
@@ -319,7 +322,7 @@ selected(event: MatAutocompleteSelectedEvent): void {
       }
       );
       setTimeout(() => {
-        //console.log(this.datos);
+        
         if(this.datos.message=="success"){
           this._snackBar.open('Grado actualizado con exito',
           '', {horizontalPosition: 'center',
@@ -352,10 +355,10 @@ selected(event: MatAutocompleteSelectedEvent): void {
       institucion:[{nombre: this.institucionnombre, id:this.institucionid}]
       
     }
-    console.log(tarea);
+  
       const respuesta=this._adminService.update(this.data.id,tarea,"Grado/gradoUpdate/").subscribe({next: data => {
       this.datos = data;
-  console.log(this.datos);
+
       },
       error:error => {
       this.errors = error.message;
@@ -365,7 +368,7 @@ selected(event: MatAutocompleteSelectedEvent): void {
     );
 
     setTimeout(() => {
-      console.log(this.datos);
+      
       if(this.datos.message=="success"){
         this._snackBar.open('Grado creado con exito',
         '', {horizontalPosition: 'center',

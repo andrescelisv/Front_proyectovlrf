@@ -10,7 +10,7 @@ import {map, startWith} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import { Body, Grado, Materia, institucion, Docentes } from '../../interfaces/docentes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+import { RatingModule } from 'ngx-bootstrap/rating';
 
 interface comprobacion {
   comprobar : boolean;
@@ -69,7 +69,7 @@ export class ValVidDialogComponent{
   max = 5;
   rate = 2;
   isReadonly = false;
-  id="DDU3gHk0Yys";
+  id="3aEvYn4iWSI";
   player!: YT.Player;
 
   verificacion:boolean=true;
@@ -157,7 +157,7 @@ export class ValVidDialogComponent{
   compclickest:boolean=false;
   
   probarclickest:boolean=false;
- 
+ inicio=false;
  
   
  /* The above code is creating a new event emitter called addUser. */
@@ -171,7 +171,7 @@ export class ValVidDialogComponent{
      /* The above code is calling the getAll method from the admin service. */
       const respuesta=this._adminService.getAll("institucion/all/").subscribe({next: data => {
         this.datosinstitucion = data.body;
-        console.log("datos institución: "+this.datosinstitucion.slice());
+       
         },
         error:error => {
         this.errors = error.message;
@@ -217,7 +217,7 @@ export class ValVidDialogComponent{
     //Verifica si es un usuario nuevo a ingresar
     if(data==null){
       //this.select='Admin';
-    
+      this.verificando();
       //Inicializa todos los inputs del html
       this.form.setValue({
        listaVideos:""
@@ -242,12 +242,12 @@ export class ValVidDialogComponent{
       //Ingresa cuando se va a editar un usuario
       this.spinnerEst=true;
       this.loadingEst=false;
-    
+      this.verificando();
       this.stateCtrlestudiantes.enable(); 
     
       this.spinner=true;  //Muestra la información dentro del div que contiene el ngIf de spinner
       this.btnact=true;
-     console.log(this.data);
+    
      
  
     
@@ -270,7 +270,7 @@ export class ValVidDialogComponent{
 
 
 
-    console.log(this.setins.map(value => value.nombre));
+   
     
    
    
@@ -279,11 +279,7 @@ export class ValVidDialogComponent{
    this.rate=data.val;
 
 
-    this.stateCtrl.setValue(this.setins.map(value => value.nombre)); //Inicializa el input de institución, no obstante esta parte
-    //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
    
-
-    this.stateCtrlestudiantes.setValue(this.setest.map(value => value.nombre));
 
     
     this.selectionins.push(this.setins[0].nombre);
@@ -293,7 +289,7 @@ export class ValVidDialogComponent{
 
 
     let institucion = this.setins.map(value => value.nombre).toString();
-    console.log(this.datosinstitucion);
+    
     
      //Coloca el vector con los valores obtenidos de la base de datos utilizando two data binding.
 
@@ -324,9 +320,10 @@ export class ValVidDialogComponent{
 
     
     setTimeout(() => {
+      this.verificando();
 
       if(this.datosestudiante.length==0){
-        console.log("datos del estudiante: "+this.datosestudiante);
+       
         this.stateCtrlestudiantes.disable();
       }else{
        
@@ -350,7 +347,7 @@ export class ValVidDialogComponent{
   selecteddba(event: MatAutocompleteSelectedEvent): void { 
     //Este evento se activa cuando el usuario selecciona un grado
     this.seleccionadostr=(event.option.viewValue);
-    console.log(this.seleccionadostr);
+  
 
     if(this.seleccionadostr.length>0){
       this.btnact=true;
@@ -376,7 +373,7 @@ export class ValVidDialogComponent{
   selectedlv(event: MatAutocompleteSelectedEvent): void { 
     //Este evento se activa cuando el usuario selecciona un grado
     this.seleccionadostr=(event.option.viewValue);
-    console.log(this.seleccionadostr);
+
 
     if(this.seleccionadostr.length>0){
       this.btnact=true;
@@ -428,7 +425,7 @@ export class ValVidDialogComponent{
 
 ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
   if (control.value && control.value.length != 10) {
-    console.log("entrando ");
+   
     return { 'phoneNumberInvalid': true };
   }
   return null;
@@ -445,7 +442,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
     
     this._adminService.getAll("Docente/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosdocente = data.body;
-      console.log(this.datosdocente);
+    
       },
       error:error => {
       this.errors = error.message;
@@ -456,7 +453,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
     
     this._adminService.getAll("Estudiante/queryname/"+this.seleccionado+"/").subscribe({next: data => {
       this.datosestudiante = data.body;
-      console.log(this.datosestudiante);
+   
       },
       error:error => {
       this.errors = error.message;
@@ -471,7 +468,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
       if(this.datosdba.length>0){
         this.showAlert=false;
         this.stateCtrldba.enable();
-         console.log(this.datosdba.forEach(value=>(console.log(value))));
+        
         this.filtrardba = this.stateCtrldba.valueChanges.pipe(
           startWith(''),
           map(state => (state ? this._filtrardba(state) : this.datosdba.slice(0,4))),
@@ -492,7 +489,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
         this.showAlert=true;
       
       }
-      console.log(this.datosdocente);
+      
       if(this.datosdocente.length>0){
         this.showAlertMat=false;
         this.stateCtrldocentes.enable();
@@ -561,6 +558,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
         this.btnact=false;
         //console.log("click verificación false");
       }
+      this.inicio=true;
    
       
      }
@@ -573,11 +571,11 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
    //Cuando se presiona el botón ingresar
     /* Declaring variables and initializing them. */
     if(this.probar){
-    let filterValueArray:any[]=[];
+    let filterValueArray:String;
     let filterDBAArray:any[]=[];
     let filterMateriaArray:any[]=[];
     let filterDocentesArray:any[]=[];
-    let filterEstudiantesArray:any[]=[];
+    let filterEstudiantesArray:String;
     let datosdba:any[]=[];
     let datoslistaVideo:any[]=[];
     let datosestudiante:any[]=[];
@@ -594,7 +592,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
 
     //Se obtiene los valores del form group y se tratan como constantes
     const videolista = this.form.value;
-    console.log(videolista);
+    
 
 
     
@@ -624,7 +622,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
     
     if(typeof filtervalue != 'string'){
     filterValue = filtervalue[0].toLowerCase(); //Se convierte a minuscula para hacer una comparación igualitaria.
-    console.log(filterValue);
+    
     }else{
       filterValue = filtervalue.toLowerCase(); 
     }
@@ -660,11 +658,11 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
  
   
      //Se obtiene la o las materias seleccionadas para el estudiante.
-     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre})))));
    //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
   
    //Se obtiene la institución seleccionada para el estudiante
-   this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre,console.log(value.nombre)));
+   this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre));
     this.datosinstitucion.slice().forEach(value=>(this.institucionid=value.id));
 
    
@@ -672,7 +670,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
    
     if(this.data==null){ 
 
-      this._adminService.getCustom("ValVideos/queryestudianteVideo",'videourl',this.form.value.listaVideos,'name',this.stateCtrlestudiantes.value).subscribe({next: data => {
+      this._adminService.getCustom("ValVideos/queryestudianteVideo",'videourl','name',this.form.value.listaVideos,this.stateCtrlestudiantes.value).subscribe({next: data => {
         this.verificacion = data.body;
         
         },
@@ -747,11 +745,11 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
         tarea.dba.videovisto.push(datosvideovisto[i]);//Se añaden al objeto tarea la materia seleccionada por el estudiante.
       }*/
 
-     console.log(tarea);
+     //console.log(tarea);
       //Se añade el objeto tarea a la petición post del servicio.
       const respuesta=this._adminService.create(tarea,"ValVideos/addValVideos/").subscribe({next: data => {
       this.datos = data;
-      console.log("create: "+this.datos);
+    
   
       },
       error:error => {
@@ -788,7 +786,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
        //En el caso que se este editando un estudiante se realiza el mismo procedimiento que para un usuario nuevo con la diferencia
        // que la petición utilizada en el servicio es de tipo put.
 
-       console.log(this.docentenombre);
+     
        let fechaactual = new Date();
        const ConvertedDate = this.myDatepipe.transform(fechaactual, 'dd-MM-yyyy hh:mm a');
       const tarea:any={
@@ -820,7 +818,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
       
         const respuesta=this._adminService.update(this.data.id,tarea,"ValVideos/ValVideosUpdate/").subscribe({next: data => {
         this.datos = data;
-    console.log(this.datos);
+  
         },
         error:error => {
         this.errors = error.message;
@@ -855,7 +853,7 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
   //de acuerdo a la necesidad del usuario.
 
   private _filtrarinstitucion(value: string): interfaceinstitucion[] {
-    console.log(value);
+
     const filterValue = value.toLowerCase();
 
     return this.datosinstitucion.filter(state => state.nombre.toLowerCase().includes(filterValue));
@@ -865,31 +863,30 @@ ValidateVideo(control: AbstractControl): {[key: string]: any} | null  {
     
 
     const filterValue = value.toLowerCase();
-    console.log(filterValue);
-    
-    console.log(this.datosdba.filter(state => state.grado.toLowerCase().includes(filterValue)));
+   
+  
     return this.datosdba.filter(state => state.identificador.toLowerCase().includes(filterValue));
   }
 
   private _filtrarmateria(value: string): interfacemateria[] {
     const filterValue = value.toLowerCase();
     
-    console.log(this.datosmateria.filter(state => state.nombre.toLowerCase().includes(filterValue)));
+ 
     return this.datosmateria.filter(state => state.nombre.toLowerCase().includes(filterValue));
   }
 
   private _filtrarestudiantes(value: string): interfacemateria[] {
     const filterValue = value[0].toLowerCase();
     
-    console.log(this.datosestudiante.filter(state => state.nombre.toLowerCase().includes(filterValue)));
+    
     return this.datosestudiante.filter(state => state.nombre.toLowerCase().includes(filterValue));
   }
 
   private _filtrardocentes(value: string): interfacemateria[] {
-    console.log(value);
+   
     const filterValue = value[0].toLowerCase();
     
-    console.log(this.datosdocente.filter(state => state.nombre.toLowerCase().includes(filterValue)));
+    
     return this.datosdocente.filter(state => state.nombre.toLowerCase().includes(filterValue));
   }
   

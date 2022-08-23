@@ -101,7 +101,7 @@ export class RaDialogComponent{
   probarclickdba:boolean=false;
   probarclickgra:boolean=false;
   probarclickmat:boolean=false;
-
+  inicio= false;
   datos: responseproyect={
     ok: true,
     message:" ",
@@ -119,7 +119,7 @@ export class RaDialogComponent{
       /* The above code is calling the getAll method from the admin service. */
        const respuesta=this._adminService.getAll("institucion/all/").subscribe({next: data => {
          this.datosinstitucion = data.body;
-         console.log("datos institución: "+this.datosinstitucion.slice());
+         //console.log("datos institución: "+this.datosinstitucion.slice());
          },
          error:error => {
          this.errors = error.message;
@@ -148,7 +148,7 @@ export class RaDialogComponent{
     
      this.myDatepipe = datepipe; //Se creo para dar formato a la fecha de tipo dd-mm-yyyy
      
-     console.log(this.data);
+    // console.log(this.data);
      //Verifica si es un usuario nuevo a ingresar
      if(data==null){
      
@@ -163,7 +163,7 @@ export class RaDialogComponent{
     
        //si la respuesta del servidor para consultar la instituciones es diferentes de null
        if(respuesta !=null){
- 
+        this.verificacion();
          //Retornar los objetos que coinciden que con el caracter o la cadena de busqueda ingresada en el input.
          this.filtrarinstitucion = this.stateCtrl.valueChanges.pipe(
            startWith(''),
@@ -181,8 +181,8 @@ export class RaDialogComponent{
    
        this.spinner=true;
        this.spinnergraMat=true;   //Muestra la información dentro del div que contiene el ngIf de spinner
-      
-       console.log(data);
+       this.verificacion();
+       //console.log(data);
         
        //Inicializa los valores del estudiante.
       this.loadingestdocdba= false;
@@ -194,11 +194,11 @@ export class RaDialogComponent{
      this.setdoc=data.docente;
      this.setest=data.estudiante;
      this.setdba=data.dba;
-     console.log(this.setdba);
+    // console.log(this.setdba);
      
-     this.stateCtrl.setValue(this.setins.map(value => value.nombre)); //Inicializa el input de institución, no obstante esta parte
+     this.stateCtrl.setValue(this.setins[0].nombre); //Inicializa el input de institución, no obstante esta parte
      //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
-     this.stateCtrlgrado.setValue(this.setgra.map(value => value.grado));//Inicializa el input de grado, no obstante esta parte
+     this.stateCtrlgrado.setValue(this.setgra[0].grado);//Inicializa el input de grado, no obstante esta parte
      //no es del todo fija, sino que se realiza con un tipo two data binding, que contiene el ngModel dentro del input
     
      
@@ -210,9 +210,9 @@ export class RaDialogComponent{
      this.selectionins.push(this.setins[0].nombre);
     
      const valordba=this.setdba.slice().map(value=>(value.dba));
-     console.log(valordba);
-     this.stateCtrldocentes.setValue(this.selectiondoc);
-     this.stateCtrlestudiantes.setValue(this.selectionest);
+    // console.log(valordba);
+     this.stateCtrldocentes.setValue(this.selectiondoc.toString());
+     this.stateCtrlestudiantes.setValue(this.selectionest.toString());
      this.stateCtrldocentes.clearValidators();
      this.stateCtrldocentes.addValidators(Validators.required);
      this.stateCtrldocentes.addValidators(Validators.minLength(1));
@@ -234,9 +234,9 @@ export class RaDialogComponent{
        map(state => (state ? this._filtrarinstitucion(state) : this.datosinstitucion.slice())),
      );
 
-     this._adminService.getCustom("dba/","grado","materia",this.stateCtrlgrado.value.toString(),this.stateCtrlmateria.value.toString()).subscribe({next: data => {
+     this._adminService.getCustom("dba/","grado","materia",this.setgra[0].grado.toString(),this.setmat[0].nombre.toString()).subscribe({next: data => {
       this.datosdba = data.body;
-      console.log(this.datosdba);
+      //console.log(this.datosdba);
       },
       error:error => {
       this.errors = error.message;
@@ -251,7 +251,7 @@ export class RaDialogComponent{
      //de datos.
      this._adminService.getAll("Grado/queryname/"+this.setins[0].nombre+"/").subscribe({next: data => {
       this.datosgrado = data.body;
-      console.log(this.datosgrado);
+     // console.log(this.datosgrado);
       },
       error:error => {
       this.errors = error.message;
@@ -263,7 +263,7 @@ export class RaDialogComponent{
     //de datos.
     this._adminService.getAll("Materia/queryname/"+this.setins[0].nombre+"/").subscribe({next: data => {
       this.datosmateria = data.body;
-      console.log(this.datosmateria);
+      //console.log(this.datosmateria);
       },
       error:error => {
       this.errors = error.message;
@@ -271,7 +271,7 @@ export class RaDialogComponent{
       }
     }
     );
-    this._adminService.getAll("Docente/queryname/"+this.setins[0].nombre+"/").subscribe({next: data => {
+    this._adminService.getCustom("Docente/querynombregrado","nombre","grado",this.setins[0].nombre,this.setgra[0].grado).subscribe({next: data => {
       this.datosdocente = data.body;
       console.log(this.datosdocente);
       },
@@ -282,9 +282,9 @@ export class RaDialogComponent{
     }
     );
     //Obtiene las materias asociadas a una institución
-    this._adminService.getAll("Estudiante/queryname/"+this.setins[0].nombre+"/").subscribe({next: data => {
+    this._adminService.getCustom("estudiante/querynombregrado","nombre","grado",this.setins[0].nombre,this.setgra[0].grado).subscribe({next: data => {
       this.datosestudiante = data.body;
-      console.log(this.datosestudiante);
+      
       },
       error:error => {
       this.errors = error.message;
@@ -297,6 +297,7 @@ export class RaDialogComponent{
   
      //Realiza el filtrado del grado y la selección de un grado
      setTimeout(() => {
+      this.verificacion();
      this.filtrardba = this.stateCtrldba.valueChanges.pipe(
       startWith(''),
       map(state => (state ? this._filtrardba(state) : this.datosdba.slice(0,4))),
@@ -352,7 +353,7 @@ export class RaDialogComponent{
   //de datos.
   this._adminService.getAll("Grado/queryname/"+this.seleccionado+"/").subscribe({next: data => {
     this.datosgrado = data.body;
-    console.log(this.datosgrado);
+    //console.log(this.datosgrado);
     },
     error:error => {
     this.errors = error.message;
@@ -364,7 +365,7 @@ export class RaDialogComponent{
   //de datos.
   this._adminService.getAll("Materia/queryname/"+this.seleccionado+"/").subscribe({next: data => {
     this.datosmateria = data.body;
-    console.log(this.datosmateria);
+    //console.log(this.datosmateria);
     },
     error:error => {
     this.errors = error.message;
@@ -381,7 +382,7 @@ export class RaDialogComponent{
     if(this.datosmateria.length>0){
       this.showAlert=false;
       this.stateCtrldba.enable();
-       console.log(this.datosdba.forEach(value=>(console.log(value))));
+       //console.log(this.datosdba.forEach(value=>(console.log(value))));
       
 
       this.filtrarmateria = this.stateCtrlmateria.valueChanges.pipe(
@@ -416,7 +417,7 @@ export class RaDialogComponent{
       this.showAlert=true;
     }
 
-    
+     this.verificacion();
     this.loading=false; 
     
     this.spinner=true;
@@ -428,11 +429,11 @@ export class RaDialogComponent{
 
     this.loadingestdocdba=true;
     this.spinnerestdocdba=false;
-    console.log(this.stateCtrl.value.toString());
+    //console.log(this.stateCtrl.value.toString());
 
     const respuestadba=this._adminService.getCustom("dba/","grado","materia",this.stateCtrlgrado.value.toString(),this.stateCtrlmateria.value.toString()).subscribe({next: data => {
       this.datosdba = data.body;
-      
+     // console.log(this.datosdba);
       },
       error:error => {
       this.errors = error.message;
@@ -443,7 +444,7 @@ export class RaDialogComponent{
 
     this._adminService.getAll("Docente/queryname/"+this.stateCtrl.value.toString()+"/").subscribe({next: data => {
       this.datosdocente = data.body;
-      console.log(this.datosdocente);
+      //console.log(this.datosdocente);
       },
       error:error => {
       this.errors = error.message;
@@ -454,7 +455,7 @@ export class RaDialogComponent{
     //Obtiene las materias asociadas a una institución
     this._adminService.getAll("Estudiante/queryname/"+this.stateCtrl.value.toString()+"/").subscribe({next: data => {
       this.datosestudiante = data.body;
-      console.log(this.datosestudiante);
+    //  console.log(this.datosestudiante);
       },
       error:error => {
       this.errors = error.message;
@@ -467,7 +468,7 @@ export class RaDialogComponent{
     setTimeout(() => {
       this.loadingestdocdba=false;
       this.spinnerestdocdba=true;
-      console.log(this.datosdba);
+     // console.log(this.datosdba);
 
     this.filtrardba = this.stateCtrldba.valueChanges.pipe(
       startWith(''),
@@ -482,16 +483,8 @@ export class RaDialogComponent{
       map(state => (state ? this._filtrarestudiantes(state) : this.datosestudiante.slice(0,4))),
     );
 
-    console.log(this.selectionest);
-    if(this.selectionest.length>8 && this.selectiondba.length>0 && this.selectiondoc.length>8){
-      this.btnact=true;
-    }else{
-      this.btnact=false;
-    }
-    if(this.datosdocente.length>0 && this.datosestudiante.length>0 &&this.datosdba.length>0 && this.stateCtrldba.value.length>0 && this.stateCtrldocentes.value.length>0 && this.stateCtrlestudiantes.value.length>0 ){
-      this.btnact=true;
-    }
-
+    //console.log(this.selectionest);
+   
     this.datosdocente.length>0 ? "" : (this.showAlertDoc=true, this.stateCtrldocentes.disable());
     this.datosdba.length>0 ? "" : (this.showAlertDBA=true, this.stateCtrldba.disable());
     this.datosestudiante.length>0 ? "" : (this.showAlertEst=true, this.stateCtrlestudiantes.disable());
@@ -525,6 +518,7 @@ export class RaDialogComponent{
     this.compclickgra=false;
     this.compclickmat=false;
    
+   // console.log(this.datosdba);
  
     if(this.selectionins.length>0 && this.selectionest.length>0 && this.selectiondoc.length>0  
       && this.selectiongra.length>0 && this.selectionmat.length>0 
@@ -536,11 +530,12 @@ export class RaDialogComponent{
       ){
       this.btnact=true;
       this.probar=true;
-      //console.log("click verificación true");
+      
     }else{
       this.btnact=false;
-      console.log("click verificación false");
+     
     }
+    this.inicio=true;
  }
 
   selectedEstudiantes(event: MatAutocompleteSelectedEvent): void { 
@@ -586,12 +581,28 @@ clickedOptionDBA(){
   Ingresar(){
 
     if(this.probar){
+//Antes
+      /*
     let filterValueArray:any[]=[];
     let filterDBAArray:any[]=[];
     let filterMateriaArray:any[]=[];
     let filterGradoArray:any[]=[];
     let filterDocentesArray:any[]=[];
     let filterEstudiantesArray:any[]=[];
+
+
+*/
+
+
+let filterValueArray:string;
+    let filterDBAArray:string;
+    let filterMateriaArray:string;
+    let filterGradoArray:string;
+    let filterDocentesArray:string;
+    let filterEstudiantesArray:string;
+
+
+
     let datosdba:any[]=[];
     let datosestudiante:any[]=[];
     let datosdocente:any[]=[];
@@ -648,7 +659,7 @@ clickedOptionDBA(){
     
     if(typeof filtervalue != 'string'){
     filterValue = filtervalue[0].toLowerCase(); //Se convierte a minuscula para hacer una comparación igualitaria.
-    console.log(filterValue);
+   // console.log(filterValue);
     }else{
       filterValue = filtervalue.toLowerCase(); 
     }
@@ -680,7 +691,7 @@ clickedOptionDBA(){
  
   
      //Se obtiene la o las materias seleccionadas para el estudiante.
-     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+     datosestudiante.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.estudiantenombre.push({id:value.id,nombre:value.nombre})))));
    //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
   
    filtervaluedocente = filterDocentesArray;
@@ -699,7 +710,7 @@ clickedOptionDBA(){
   
    
       //Se obtiene la o las materias seleccionadas para el estudiante.
-      datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
+      datosdocente.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.docentenombre.push({id:value.id,nombre:value.nombre})))));
     //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
 
    for(let i=0;i<filterDBAArray.length;i++){
@@ -739,8 +750,17 @@ clickedOptionDBA(){
    
     
        //Se obtiene la o las materias seleccionadas para el estudiante.
-       datosmateria.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.materianombre.push({id:value.id,nombre:value.nombre}),console.log(value.id)))));
-     
+       datosmateria.slice().forEach(value=>(value.forEach((value: { id: string; nombre:string;})=>(this.materianombre.push({id:value.id,nombre:value.nombre})))));
+       
+       function comparar(valor:string,filtro:string):boolean{
+        if(valor==filtro){
+          return true;
+        }else{
+          return false;
+        }
+       }
+
+
        filtervaluegrado = filterGradoArray;
        if(typeof filtervaluegrado != 'string'){
          filterValuegrado = filtervaluegrado[0].toLowerCase(); //Convierte el valor de grado a minusculas //Se convierte a minuscula para hacer una comparación igualitaria.
@@ -751,20 +771,21 @@ clickedOptionDBA(){
        
            
            //Realiza agregación del objeto que coincide con la busqueda del usuario.
-           datosgrado.push(this.datosgrado.filter(state => state.grado.toLowerCase().includes(filterValuegrado)));
+           datosgrado.push(this.datosgrado.filter(state => comparar(state.grado.trim().toLowerCase().toString(),filterValuegrado.
+           trim().toLowerCase().toString())));
        
             
       
        
           //Se obtiene la o las materias seleccionadas para el estudiante.
-          datosgrado.slice().forEach(value=>(value.forEach((value: { id: string; grado:string;})=>(this.gradonombre.push({id:value.id,grado:value.grado}),console.log(value.id)))));
+          datosgrado.slice().forEach(value=>(value.forEach((value: { id: string; grado:string;})=>(this.gradonombre.push({id:value.id,grado:value.grado})))));
         //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
      
     
      
        //this.datosmateria.slice().forEach(value=>(this.materiaid=value.id));
    //Se obtiene la institución seleccionada para el estudiante
-   this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre,console.log(value.nombre)));
+   this.datosinstitucion.slice().forEach(value=>(this.institucionnombre=value.nombre));
     this.datosinstitucion.slice().forEach(value=>(this.institucionid=value.id));
    
 
@@ -781,7 +802,7 @@ clickedOptionDBA(){
       }
       );
       if(this.verificar){
-        console.log(this.verificar);
+        //console.log(this.verificar);
         this._snackBar.open('Espere un momento por favor',
         '', {horizontalPosition: 'center',
          verticalPosition: 'bottom',
@@ -811,7 +832,7 @@ clickedOptionDBA(){
       }
      
       if(!this.verificar){
-        console.log(this.verificar);
+        
        //En el caos que sea un usuario nuevo se crea el objeto tareas de la siguiente forma
       const tarea:any={
         dba:[],
@@ -852,11 +873,11 @@ clickedOptionDBA(){
         tarea.dba.videovisto.push(datosvideovisto[i]);//Se añaden al objeto tarea la materia seleccionada por el estudiante.
       }*/
 
-     console.log(tarea);
+    // console.log(tarea);
       //Se añade el objeto tarea a la petición post del servicio.
       const respuesta=this._adminService.create(tarea,"RA/addRA/").subscribe({next: data => {
       this.datos = data;
-      console.log("create: "+this.datos);
+     // console.log("create: "+this.datos);
   
       },
       error:error => {
@@ -868,7 +889,7 @@ clickedOptionDBA(){
     //Se espera un tiempo hasta obtener la respuesta del servidor
    //Se espera un tiempo hasta obtener la respuesta del servidor
    setTimeout(() => {
-    console.log(this.datos);
+    //console.log(this.datos);
     if(this.datos.message=="success"){
       this._snackBar.open('Ruta de aprendizaje agregada con exito',
       '', {horizontalPosition: 'center',
@@ -892,10 +913,7 @@ clickedOptionDBA(){
     else{
        //En el caso que se este editando un estudiante se realiza el mismo procedimiento que para un usuario nuevo con la diferencia
        // que la petición utilizada en el servicio es de tipo put.
-       console.log(this.docentenombre);
-       console.log(this.materianombre);
-       console.log(this.gradonombre);
-       console.log(this.institucionid)
+      
        let fechaactual = new Date();
        const ConvertedDate = this.myDatepipe.transform(fechaactual, 'dd-MM-yyyy hh:mm a');
       const tarea:any={
@@ -930,10 +948,10 @@ clickedOptionDBA(){
       for(let i=0;i<this.dbanombre.length;i++){
         tarea.dba.push(this.dbanombre[i]);//Se añaden al objeto tarea la materia seleccionada por el estudiante.
       }
-      console.log(tarea);
+      //console.log(tarea);
         const respuesta=this._adminService.update(this.data.id,tarea,"RA/RAUpdate/").subscribe({next: data => {
         this.datos = data;
-    console.log(this.datos);
+  //  console.log(this.datos);
         },
         error:error => {
         this.errors = error.message;
@@ -943,7 +961,7 @@ clickedOptionDBA(){
       );
   
     if(this.datos.ok==true){
-      this._snackBar.open('Historail de uso actualizado con exito',
+      this._snackBar.open('Ruta de aprendizaje actualizado con exito',
       '', {horizontalPosition: 'center',
        verticalPosition: 'bottom',
        duration: 5000});
@@ -985,7 +1003,7 @@ clickedOptionDBA(){
   private _filtrardba(value: string): interfacedba[] {
     const filterValue = value.toLowerCase();
     
-    console.log(this.datosdba.filter(state => state.dba.toLowerCase().includes(filterValue)));
+   // console.log(this.datosdba.filter(state => state.dba.toLowerCase().includes(filterValue)));
     if(this.stateCtrldba.value.length>0 && this.stateCtrldocentes.value.length>10 && this.stateCtrlestudiantes.value.length>10){
       this.btnact=true;
       

@@ -30,7 +30,11 @@
           </mat-form-field>
           
           <app-control-messages  [control]="stateCtrl"></app-control-messages>
-
+          <div *ngIf="probarclick == false && inicio">
+            <button class="btn" [swal]="['El valor de institución seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
           <mat-spinner *ngIf="loadinggraMat" diameter="30" class="spinner"></mat-spinner>
           <div *ngIf="spinnergraMat">
 
@@ -61,7 +65,11 @@
               </mat-form-field>
               
               <app-control-messages  [control]="stateCtrlmateria"></app-control-messages>
-
+              <div *ngIf="probarclickmat == false && inicio">
+                <button class="btn" [swal]="['El valor de materia seleccionado presenta un error, selecione otro porfavor']">
+                  <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                  <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+              </div>
               <mat-form-field  appearance="fill">
                 <mat-label>Grado</mat-label>
                 <input matInput
@@ -89,7 +97,11 @@
               </mat-form-field>
               
               <app-control-messages  [control]="stateCtrlgrado"></app-control-messages>
-
+              <div *ngIf="probarclickmat == false && inicio">
+                <button class="btn" [swal]="['El valor de matería seleccionado presenta un error, selecione otro porfavor']">
+                  <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                  <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+              </div>
               <mat-spinner *ngIf="loadingestdocdba" diameter="30" class="spinner"></mat-spinner>
           <div *ngIf="spinnerestdocdba">
 
@@ -123,7 +135,11 @@
                   </mat-form-field>
     
                   <app-control-messages  [control]="stateCtrldba"></app-control-messages>
-
+                  <div *ngIf="stateCtrldba.value.length ==0 && inicio">
+                    <button class="btn" [swal]="['El valor de dba seleccionado presenta un error, selecione otro porfavor']">
+                      <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                      <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+                  </div>
                   <mat-form-field  appearance="fill">
                     <mat-label>Estudiante</mat-label>
                     <input matInput
@@ -151,7 +167,11 @@
                   </mat-form-field>
         
                       <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
-
+                      <div *ngIf="probarclickest == false && inicio">
+                        <button class="btn" [swal]="['El valor de estudiante seleccionado presenta un error, selecione otro porfavor']">
+                          <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                          <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+                      </div>
                       <mat-form-field  appearance="fill">
                         <mat-label>Docente</mat-label>
                         <input matInput
@@ -179,7 +199,11 @@
                       </mat-form-field>
             
                           <app-control-messages  [control]="stateCtrldocentes"></app-control-messages>
-
+                          <div *ngIf="probarclickdoc == false && inicio">
+                            <button class="btn" [swal]="['El valor de docente seleccionado presenta un error, selecione otro porfavor']">
+                              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+                          </div>
 
 
                         

@@ -30,6 +30,11 @@
           </mat-form-field>
           
           <app-control-messages  [control]="stateCtrl"></app-control-messages>
+          <div *ngIf="probarclick == false && inicio">
+            <button class="btn" [swal]="['El valor de institución seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
           <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
         <div *ngIf="spinner">
 
@@ -78,15 +83,19 @@
                     </div>
                 </div>
             <mat-autocomplete #autodba="matAutocomplete" (optionSelected)="selecteddba($event)">
-              <mat-option *ngFor="let state of filtrardba | async" [value]="state.identificador">
-                <span>{{state.identificador}}</span>
+              <mat-option *ngFor="let state of filtrardba | async" [value]="state">
+                <span>{{state}}</span>
             
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
           
           <app-control-messages  [control]="stateCtrldba"></app-control-messages>
-
+          <div *ngIf="probarclickdba == false && inicio">
+            <button class="btn" [swal]="['El valor de dba seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
          
           <mat-form-field  appearance="fill">
             <mat-label>Docente</mat-label>
@@ -115,7 +124,11 @@
           </mat-form-field>
 
               <app-control-messages  [control]="stateCtrldocentes"></app-control-messages>
-
+              <div *ngIf="probarclickdoc == false && inicio">
+                <button class="btn" [swal]="['El valor de docente seleccionado presenta un error, selecione otro porfavor']">
+                  <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                  <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+              </div>
 
               <mat-form-field  appearance="fill">
                 <mat-label>Estudiante</mat-label>
@@ -144,7 +157,11 @@
               </mat-form-field>
     
                   <app-control-messages  [control]="stateCtrlestudiantes"></app-control-messages>
-
+                  <div *ngIf="probarclickest == false && inicio">
+                    <button class="btn" [swal]="['El valor de estudiante seleccionado presenta un error, selecione otro porfavor']">
+                      <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+                      <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+                  </div>
         </div>
 
         <div *ngIf="activate">

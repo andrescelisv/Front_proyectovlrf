@@ -42,7 +42,12 @@
             </mat-autocomplete>
           </mat-form-field>
           
-
+          <app-control-messages  [control]="stateCtrl"></app-control-messages>
+          <div *ngIf="probarclick == false && inicio">
+            <button class="btn" [swal]="['El valor de institucion seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
           <mat-spinner *ngIf="loading" diameter="30" class="spinner"></mat-spinner>
           <div *ngIf="spinner">
 
@@ -67,8 +72,12 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
-          
-         
+          <app-control-messages  [control]="stateCtrlmunicipio"></app-control-messages>
+          <div *ngIf="probarclickmun == false && inicio">
+            <button class="btn" [swal]="['El valor de municipio seleccionado presenta un error, selecione otro porfavor']">
+              <i class="fa fa-exclamation-triangle fa-2x red-text pr-2" aria-hidden="true"></i></button>
+              <h1 class="inputerrorinputicon">Presione el signo de exclamación para conocer el error</h1>
+          </div>
         </div>
           <mat-form-field class="ancho" appearance="fill">
             <mat-label>Telefono</mat-label>

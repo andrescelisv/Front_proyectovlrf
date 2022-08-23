@@ -9,7 +9,7 @@ import { EstudiantesComponent } from './estudiantes/estudiantes.component';
 import { MateriasComponent } from './materias/materias.component';
 import { GradoComponent } from './grado/grado.component';
 import { RouterModule } from '@angular/router';
-import { DashboardRoutingModule } from './admin-routing.module';
+
 import { UsuarioComponent } from './usuario/usuario.component';
 import { SharedModule } from '../shared/shared.module';
 import { UsuarioDialogComponent } from './usuario/usuario-dialog/usuario-dialog.component';
@@ -38,7 +38,9 @@ import { RaDialogComponent } from './ra/ra-dialog/ra-dialog.component';
 import { ComentariosComponent } from './comentarios/comentarios.component';
 import { ComentariosDialogComponent } from './comentarios/comentarios-dialog/comentarios-dialog.component';
 import { TitlecaseComponent } from './titlecase/titlecase.component';
-
+import { AdminComponent } from './admin.component';
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 
 
@@ -78,25 +80,27 @@ import { TitlecaseComponent } from './titlecase/titlecase.component';
     RaDialogComponent,
     ComentariosComponent,
     ComentariosDialogComponent,
-    TitlecaseComponent
+    TitlecaseComponent,
+    AdminComponent
     
   ],
   imports: [
     CommonModule,
     RouterModule,
-    DashboardRoutingModule,
     SharedModule,
     RatingModule.forRoot(),
-    NgxYoutubePlayerModule.forRoot() 
+    NgxYoutubePlayerModule.forRoot(),
+    SweetAlert2Module.forRoot()
   ],
   exports:[
     SidenavComponent,
     BodyComponent,
-    DashboardRoutingModule,
     SharedModule,
     UsuarioDialogComponent,
     DocenteDialogComponent,
-    TableConsumerAddComponent
+    TableConsumerAddComponent,
+    AdminComponent,
+    MatToolbarHomeComponent
   ],
   providers: [
     DatePipe
